@@ -1,63 +1,122 @@
+from concurrent.futures.thread import ThreadPoolExecutor
+
 import requests
 import urllib.parse
-import os
 from bs4 import BeautifulSoup
-
-kw = input("输入要查找的图片")
-url = "http://rule34.paheal.net/post/list/" + kw + "/1"
-URL = url[:-2]             # URL = "http://rule34.paheal.net/post/list/" + kw
-
-
-headers = {
-    "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.114 Safari/537.36 Edg/103.0.1264.62"
-}
-
-resp = requests.get(url=url, headers=headers)
-soup = BeautifulSoup(resp.content, "html.parser")
-
-paginator = soup.find(text="Last").parent
-href = str(paginator.get("href")) + ""
-
-last = int(href[href.rfind("/") + 1:])
-
-
-i = 1
-while( i <= last ):
-    page = requests.get(URL + "/" + i.__str__() + "", headers=headers)
-    Soup = BeautifulSoup(page.content, "html.parser")
-    files = Soup.find_all(text="File Only")
-
-    for file in files:  # 下载该页的所有图片
-        resouse = file.parent.get("href")  # 文件地址
-        fileName = urllib.parse.unquote(file.parent.get("href").split("/")[-1])  # 文件名
-        src = "H:/m'm/rule34/target/" + fileName  # 下载的目标路径
-        if(os.listdir("H:/m'm/rule34/target/").__contains__(fileName)):
-            print("continue")
-            continue
-
-        # 临时
-        if(fileName == "4486889 - Aatrox Akshan Aphelios Aurelion_Sol Brand_the_Burning_Vengeance Braum Darius Dr._Mundo Draven Ekko Gangplank Garen_Crownguard Graves Hecarim Jarvan_IV Jayce Kayn League_of_Legends Lee_Sin Maokai Master_Yi Mordekaiser OA_Reeeere Pantheon Rakan Renekton Rengar Sett Shen Singed Swain Sylas Talon Taric Thresh Trundle Tryndamere Varus Viego Viktor Yasuo Yone Yorick ZAC rhaast.jpg"):
-            print("continue")
-            continue
-        if(fileName == "1950877 - Alistar Aurelion_Sol Azir Bard Cho'Gath Galio Galrock Jax Kha'Zix Kog'Maw League_of_Legends Malphite Maokai Merchant Nasus Rammus Renekton Rengar Rumble Tahm_Kench Trundle Twitch_the_Plague_Rat Vel'Koz Volibear Warwick Wukong Xerath ZAC Ziggs yordle.jpg"):
-            print("continue")
-            continue
-        if(fileName == "3858137 - Appleseed Beastars Blazblue Blood_Blockade_Battlefront Briareos Crysis Crysis_2 DC Darksiders Death_Adder Dragaux Fatal_Fury Five_Nights_at_Freddy's Five_Nights_at_Freddy's:_Help_Wanted Gigas Glitchtrap Golden_Axe Green_Lantern_(series) Green_Lantern_Corps Greninja Grillby Grimmsnarl Jon_Talbain Kilowog Laurence_Barnes League_of_Legends Legoshi Machoke Monster_Hunter Porkyman RG01 RingFit_Adventure Star_Fox Strife Surtr Susanoo Tekken Tizoc Tokyo_Afterschool_Summoners Undertale Wolf_O'Donnell ZAC Zed_O'Brien Zinogre crossover.jpg"):
-            print("continue")
-            continue
+import re
+import MySQLdb
 
 
 
+# 从页面内得到总页数
+def getLastPage(url):
+    resp = requests.get(url)
+    page_content = resp.text
 
+    bs = BeautifulSoup(page_content, "html.parser")
+    paginator = bs.find(text="Last").parent
+    href = str(paginator.get("href")) + ""
 
-        print("Downloading " + fileName)
-        download = requests.get(resouse)
-        open(src, "wb").write(download.content)
-        print("Finished")
-        download.close()
+    obj = re.compile(r"/post/list/.*?/(?P<Lpage>\d+)", re.S)
+    result = obj.match(href).group("Lpage")
+
+    resp.close()
+
+    return int(result)
+
+# 将图片id提交到数据库
+def recordId(id_str):
+    sql = "insert into rule34(id) value ('" + id_str + "');"
+    try:
+        # 执行sql语句
+        cursor.execute(sql)
+        # 提交到数据库执行
+        db.commit()
+    except:
+        # 发生错误时回滚
+        db.rollback()
+
+# 检查数据库内是否重复
+def isDownloaded(id_str):
+    sql = "SELECT IFNULL((SELECT TRUE FROM rule34 WHERE id='" + id_str + "' LIMIT 1),FALSE) ;"
+    try:
+        # 执行sql语句
+        cursor.execute(sql)
+        if(cursor.fetchall()[0][0] == 1):
+            return True
+
+    except:
+        # 发生错误时回滚
+        db.rollback()
+    return False
+
+# 获得文件id
+def getId(file_name):
+    obj = re.compile(r"(?P<id>^\d+)", re.S)
+
+    for i in obj.finditer(file_name):
+        return i.group("id")
+
+# 文件名合法化
+def fileNameLegal (name):
+    result = name.replace("/", ".").replace(":","-").replace("*", "x").replace("?", " ").replace('"', "'").replace("<", "[").replace(">", "]").replace("|", "-")
+    if(len(result) >= 255):
+        result = result[0:99] + "......"
+    return result
+
+# 下载
+def download(href, src):
+    file_name = fileNameLegal(urllib.parse.unquote(href.split("/")[-1]))
+    id = getId(file_name)
+    if isDownloaded(id) == False:
+        down = requests.get(href)
+        open(src + file_name, "wb").write(down.content)
+        print(file_name, " downloaded")
+        down.close()
+        recordId(id + "")
+    else:
+        print("continue")
+
+# 从页面中获取所有链接并下载
+def pageDownload(url, src):
+    page = requests.get(url)
+    bs = BeautifulSoup(page.content, "html.parser")
+    files = bs.find_all(text="File Only")
     page.close()
-    i += 1
 
-print("Finished!")
+    for file in files:
+        download(file.parent.get("href"), src)
 
-resp.close()
+def test(str):
+    print(str)
+
+if __name__ == "__main__":
+
+    # 准备
+
+    password = input("输入数据库密码：\n")
+    # 连接数据库
+    db = MySQLdb.connect("localhost", "root", password, "SpiderData", charset='utf8')
+    # 使用cursor()方法获取操作游标
+    cursor = db.cursor()
+
+
+    # 链接
+    kw = input("输入要查找的图片")
+    url = "http://rule34.paheal.net/post/list/" + kw + "/1"
+    URL = url[:-2]  # URL = "http://rule34.paheal.net/post/list/" + kw
+    last_page = getLastPage(url)
+
+    # 目标路径
+    src = "H:/m'm/rule34/target/"
+
+    # 创建线程池
+    with ThreadPoolExecutor(10) as t:
+        for i in range(last_page + 1):
+            t.submit(pageDownload(URL + "/" + (i+1).__str__(), src), name=f"线程{i}")
+
+
+    db.close()
+
+
+
