@@ -1,0 +1,8 @@
+{
+  "properties": [
+    {
+      "name": "pplax.spider.furaffinity.cookie",
+      "type": "java.lang.String",
+      "description": "Description for pplax.spider.furaffinity.cookie."
+  }
+] }

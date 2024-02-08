@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="xyz.pplax.spiderdemo.dao.ArtistDao">
+  <resultMap id="BaseResultMap" type="xyz.pplax.spiderdemo.model.pojo.Artist">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="update_at" jdbcType="TIMESTAMP" property="updateAt" />
+    <result column="insert_at" jdbcType="TIMESTAMP" property="insertAt" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, `name`, update_at, insert_at
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from artist
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from artist
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="xyz.pplax.spiderdemo.model.pojo.Artist" useGeneratedKeys="true">
+    insert into artist (`name`, update_at, insert_at
+      )
+    values (#{name,jdbcType=VARCHAR}, #{updateAt,jdbcType=TIMESTAMP}, #{insertAt,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="xyz.pplax.spiderdemo.model.pojo.Artist" useGeneratedKeys="true">
+    insert into artist
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="name != null">
+        `name`,
+      </if>
+      <if test="updateAt != null">
+        update_at,
+      </if>
+      <if test="insertAt != null">
+        insert_at,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="updateAt != null">
+        #{updateAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="insertAt != null">
+        #{insertAt,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="xyz.pplax.spiderdemo.model.pojo.Artist">
+    update artist
+    <set>
+      <if test="name != null">
+        `name` = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="updateAt != null">
+        update_at = #{updateAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="insertAt != null">
+        insert_at = #{insertAt,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="xyz.pplax.spiderdemo.model.pojo.Artist">
+    update artist
+    set `name` = #{name,jdbcType=VARCHAR},
+      update_at = #{updateAt,jdbcType=TIMESTAMP},
+      insert_at = #{insertAt,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="xyz.pplax.spiderdemo.dao.vo.PlatformArtistVoDao">
+  <resultMap id="BaseResultMap" type="xyz.pplax.spiderdemo.model.vo.PlatformArtistVo">
+    <id column="artist_id" jdbcType="BIGINT" property="artistId" />
+    <result column="artist_name" jdbcType="VARCHAR" property="artistName" />
+    <result column="homepage_url" jdbcType="VARCHAR" property="homepageUrl" />
+    <result column="artist_platform_name" jdbcType="VARCHAR" property="artistPlatformName" />
+    <result column="platform_id" jdbcType="INTEGER" property="platformId" />
+    <result column="platform_name" jdbcType="VARCHAR" property="platformName" />
+    <result column="platform_url" jdbcType="VARCHAR" property="platformUrl" />
+  </resultMap>
+  <sql id="Base_Column_List">
+      artist.id as artist_id, artist.name as artist_name, artist_homepage_url.homepage_url as homepage_url, artist_name.name artist_platform_name, platform.id as platform_id, platform.name as platform_name, platform.url as platform_url
+  </sql>
+
+    <select id="selectByPlatformArtistVoDto" parameterType="xyz.pplax.spiderdemo.model.dto.PlatformArtistVoDto" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from artist_name
+        left join artist_homepage_url on artist_name.artist_id = artist_homepage_url.artist_id
+        left join artist on artist_name.artist_id = artist.id
+        left join platform on platform.id = artist_name.platform_id
+        <if test="platformName != null">
+            where platform.name = #{platformName,jdbcType=VARCHAR} and
+        </if>
+        <if test="artistName != null">
+            artist.name = #{artistName,jdbcType=VARCHAR} and
+        </if>
+        1 = 1
+        limit #{page}, #{size}
+    </select>
+
+
+</mapper>

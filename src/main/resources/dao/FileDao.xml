@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="xyz.pplax.spiderdemo.dao.FileDao">
+  <resultMap id="BaseResultMap" type="xyz.pplax.spiderdemo.model.pojo.File">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="artist_id" jdbcType="BIGINT" property="artistId" />
+    <result column="platform_id" jdbcType="INTEGER" property="platformId" />
+    <result column="id_in_platform" jdbcType="VARCHAR" property="idInPlatform" />
+    <result column="hash" jdbcType="VARCHAR" property="hash" />
+    <result column="file_url" jdbcType="VARCHAR" property="fileUrl" />
+    <result column="file_type" jdbcType="VARCHAR" property="fileType" />
+    <result column="file_name" jdbcType="VARCHAR" property="fileName" />
+    <result column="file_path" jdbcType="VARCHAR" property="filePath" />
+    <result column="page_url" jdbcType="VARCHAR" property="pageUrl" />
+    <result column="update_at" jdbcType="TIMESTAMP" property="updateAt" />
+    <result column="insert_at" jdbcType="TIMESTAMP" property="insertAt" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, artist_id, platform_id, id_in_platform, hash, file_url, file_type, file_name, 
+    file_path, page_url, update_at, insert_at
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from file
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from file
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="xyz.pplax.spiderdemo.model.pojo.File" useGeneratedKeys="true">
+    insert into file (artist_id, platform_id, id_in_platform, 
+      hash, file_url, file_type, 
+      file_name, file_path, page_url, 
+      update_at, insert_at)
+    values (#{artistId,jdbcType=BIGINT}, #{platformId,jdbcType=INTEGER}, #{idInPlatform,jdbcType=VARCHAR}, 
+      #{hash,jdbcType=VARCHAR}, #{fileUrl,jdbcType=VARCHAR}, #{fileType,jdbcType=VARCHAR}, 
+      #{fileName,jdbcType=VARCHAR}, #{filePath,jdbcType=VARCHAR}, #{pageUrl,jdbcType=VARCHAR}, 
+      #{updateAt,jdbcType=TIMESTAMP}, #{insertAt,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="xyz.pplax.spiderdemo.model.pojo.File" useGeneratedKeys="true">
+    insert into file
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="artistId != null">
+        artist_id,
+      </if>
+      <if test="platformId != null">
+        platform_id,
+      </if>
+      <if test="idInPlatform != null">
+        id_in_platform,
+      </if>
+      <if test="hash != null">
+        hash,
+      </if>
+      <if test="fileUrl != null">
+        file_url,
+      </if>
+      <if test="fileType != null">
+        file_type,
+      </if>
+      <if test="fileName != null">
+        file_name,
+      </if>
+      <if test="filePath != null">
+        file_path,
+      </if>
+      <if test="pageUrl != null">
+        page_url,
+      </if>
+      <if test="updateAt != null">
+        update_at,
+      </if>
+      <if test="insertAt != null">
+        insert_at,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="artistId != null">
+        #{artistId,jdbcType=BIGINT},
+      </if>
+      <if test="platformId != null">
+        #{platformId,jdbcType=INTEGER},
+      </if>
+      <if test="idInPlatform != null">
+        #{idInPlatform,jdbcType=VARCHAR},
+      </if>
+      <if test="hash != null">
+        #{hash,jdbcType=VARCHAR},
+      </if>
+      <if test="fileUrl != null">
+        #{fileUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="fileType != null">
+        #{fileType,jdbcType=VARCHAR},
+      </if>
+      <if test="fileName != null">
+        #{fileName,jdbcType=VARCHAR},
+      </if>
+      <if test="filePath != null">
+        #{filePath,jdbcType=VARCHAR},
+      </if>
+      <if test="pageUrl != null">
+        #{pageUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="updateAt != null">
+        #{updateAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="insertAt != null">
+        #{insertAt,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="xyz.pplax.spiderdemo.model.pojo.File">
+    update file
+    <set>
+      <if test="artistId != null">
+        artist_id = #{artistId,jdbcType=BIGINT},
+      </if>
+      <if test="platformId != null">
+        platform_id = #{platformId,jdbcType=INTEGER},
+      </if>
+      <if test="idInPlatform != null">
+        id_in_platform = #{idInPlatform,jdbcType=VARCHAR},
+      </if>
+      <if test="hash != null">
+        hash = #{hash,jdbcType=VARCHAR},
+      </if>
+      <if test="fileUrl != null">
+        file_url = #{fileUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="fileType != null">
+        file_type = #{fileType,jdbcType=VARCHAR},
+      </if>
+      <if test="fileName != null">
+        file_name = #{fileName,jdbcType=VARCHAR},
+      </if>
+      <if test="filePath != null">
+        file_path = #{filePath,jdbcType=VARCHAR},
+      </if>
+      <if test="pageUrl != null">
+        page_url = #{pageUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="updateAt != null">
+        update_at = #{updateAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="insertAt != null">
+        insert_at = #{insertAt,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="xyz.pplax.spiderdemo.model.pojo.File">
+    update file
+    set artist_id = #{artistId,jdbcType=BIGINT},
+      platform_id = #{platformId,jdbcType=INTEGER},
+      id_in_platform = #{idInPlatform,jdbcType=VARCHAR},
+      hash = #{hash,jdbcType=VARCHAR},
+      file_url = #{fileUrl,jdbcType=VARCHAR},
+      file_type = #{fileType,jdbcType=VARCHAR},
+      file_name = #{fileName,jdbcType=VARCHAR},
+      file_path = #{filePath,jdbcType=VARCHAR},
+      page_url = #{pageUrl,jdbcType=VARCHAR},
+      update_at = #{updateAt,jdbcType=TIMESTAMP},
+      insert_at = #{insertAt,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

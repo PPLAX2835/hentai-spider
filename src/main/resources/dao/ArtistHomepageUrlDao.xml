@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="xyz.pplax.spiderdemo.dao.ArtistHomepageUrlDao">
+  <resultMap id="BaseResultMap" type="xyz.pplax.spiderdemo.model.pojo.ArtistHomepageUrl">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="artist_id" jdbcType="BIGINT" property="artistId" />
+    <result column="platform_id" jdbcType="INTEGER" property="platformId" />
+    <result column="homepage_url" jdbcType="VARCHAR" property="homepageUrl" />
+    <result column="update_at" jdbcType="TIMESTAMP" property="updateAt" />
+    <result column="insert_at" jdbcType="TIMESTAMP" property="insertAt" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, artist_id, platform_id, homepage_url, update_at, insert_at
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from artist_homepage_url
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from artist_homepage_url
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="xyz.pplax.spiderdemo.model.pojo.ArtistHomepageUrl" useGeneratedKeys="true">
+    insert into artist_homepage_url (artist_id, platform_id, homepage_url, 
+      update_at, insert_at)
+    values (#{artistId,jdbcType=BIGINT}, #{platformId,jdbcType=INTEGER}, #{homepageUrl,jdbcType=VARCHAR}, 
+      #{updateAt,jdbcType=TIMESTAMP}, #{insertAt,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="xyz.pplax.spiderdemo.model.pojo.ArtistHomepageUrl" useGeneratedKeys="true">
+    insert into artist_homepage_url
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="artistId != null">
+        artist_id,
+      </if>
+      <if test="platformId != null">
+        platform_id,
+      </if>
+      <if test="homepageUrl != null">
+        homepage_url,
+      </if>
+      <if test="updateAt != null">
+        update_at,
+      </if>
+      <if test="insertAt != null">
+        insert_at,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="artistId != null">
+        #{artistId,jdbcType=BIGINT},
+      </if>
+      <if test="platformId != null">
+        #{platformId,jdbcType=INTEGER},
+      </if>
+      <if test="homepageUrl != null">
+        #{homepageUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="updateAt != null">
+        #{updateAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="insertAt != null">
+        #{insertAt,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="xyz.pplax.spiderdemo.model.pojo.ArtistHomepageUrl">
+    update artist_homepage_url
+    <set>
+      <if test="artistId != null">
+        artist_id = #{artistId,jdbcType=BIGINT},
+      </if>
+      <if test="platformId != null">
+        platform_id = #{platformId,jdbcType=INTEGER},
+      </if>
+      <if test="homepageUrl != null">
+        homepage_url = #{homepageUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="updateAt != null">
+        update_at = #{updateAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="insertAt != null">
+        insert_at = #{insertAt,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="xyz.pplax.spiderdemo.model.pojo.ArtistHomepageUrl">
+    update artist_homepage_url
+    set artist_id = #{artistId,jdbcType=BIGINT},
+      platform_id = #{platformId,jdbcType=INTEGER},
+      homepage_url = #{homepageUrl,jdbcType=VARCHAR},
+      update_at = #{updateAt,jdbcType=TIMESTAMP},
+      insert_at = #{insertAt,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
