@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="xyz.pplax.spiderdemo.dao.ArtistDao">
-  <resultMap id="BaseResultMap" type="xyz.pplax.spiderdemo.model.pojo.Artist">
+<mapper namespace="xyz.pplax.spider.dao.ArtistDao">
+  <resultMap id="BaseResultMap" type="xyz.pplax.spider.model.pojo.Artist">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="update_at" jdbcType="TIMESTAMP" property="updateAt" />
@@ -20,13 +20,13 @@
     delete from artist
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="xyz.pplax.spiderdemo.model.pojo.Artist" useGeneratedKeys="true">
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="xyz.pplax.spider.model.pojo.Artist" useGeneratedKeys="true">
     insert into artist (`name`, update_at, insert_at
       )
     values (#{name,jdbcType=VARCHAR}, #{updateAt,jdbcType=TIMESTAMP}, #{insertAt,jdbcType=TIMESTAMP}
       )
   </insert>
-  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="xyz.pplax.spiderdemo.model.pojo.Artist" useGeneratedKeys="true">
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="xyz.pplax.spider.model.pojo.Artist" useGeneratedKeys="true">
     insert into artist
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="name != null">
@@ -51,7 +51,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="xyz.pplax.spiderdemo.model.pojo.Artist">
+  <update id="updateByPrimaryKeySelective" parameterType="xyz.pplax.spider.model.pojo.Artist">
     update artist
     <set>
       <if test="name != null">
@@ -66,7 +66,7 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="xyz.pplax.spiderdemo.model.pojo.Artist">
+  <update id="updateByPrimaryKey" parameterType="xyz.pplax.spider.model.pojo.Artist">
     update artist
     set `name` = #{name,jdbcType=VARCHAR},
       update_at = #{updateAt,jdbcType=TIMESTAMP},

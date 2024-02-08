@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="xyz.pplax.spiderdemo.dao.vo.PlatformArtistVoDao">
-  <resultMap id="BaseResultMap" type="xyz.pplax.spiderdemo.model.vo.PlatformArtistVo">
+<mapper namespace="xyz.pplax.spider.dao.vo.PlatformArtistVoDao">
+  <resultMap id="BaseResultMap" type="xyz.pplax.spider.model.vo.PlatformArtistVo">
     <id column="artist_id" jdbcType="BIGINT" property="artistId" />
     <result column="artist_name" jdbcType="VARCHAR" property="artistName" />
     <result column="homepage_url" jdbcType="VARCHAR" property="homepageUrl" />
@@ -14,7 +14,7 @@
       artist.id as artist_id, artist.name as artist_name, artist_homepage_url.homepage_url as homepage_url, artist_name.name artist_platform_name, platform.id as platform_id, platform.name as platform_name, platform.url as platform_url
   </sql>
 
-    <select id="selectByPlatformArtistVoDto" parameterType="xyz.pplax.spiderdemo.model.dto.PlatformArtistVoDto" resultMap="BaseResultMap">
+    <select id="selectByPlatformArtistVoDto" parameterType="xyz.pplax.spider.model.dto.PlatformArtistVoDto" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List" />
         from artist_name

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="xyz.pplax.spiderdemo.dao.ArtistNameDao">
-  <resultMap id="BaseResultMap" type="xyz.pplax.spiderdemo.model.pojo.ArtistName">
+<mapper namespace="xyz.pplax.spider.dao.ArtistNameDao">
+  <resultMap id="BaseResultMap" type="xyz.pplax.spider.model.pojo.ArtistName">
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="artist_id" jdbcType="BIGINT" property="artistId" />
     <result column="platform_id" jdbcType="INTEGER" property="platformId" />
@@ -22,13 +22,13 @@
     delete from artist_name
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="xyz.pplax.spiderdemo.model.pojo.ArtistName" useGeneratedKeys="true">
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="xyz.pplax.spider.model.pojo.ArtistName" useGeneratedKeys="true">
     insert into artist_name (artist_id, platform_id, `name`, 
       update_at, insert_at)
     values (#{artistId,jdbcType=BIGINT}, #{platformId,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, 
       #{updateAt,jdbcType=TIMESTAMP}, #{insertAt,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="xyz.pplax.spiderdemo.model.pojo.ArtistName" useGeneratedKeys="true">
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="xyz.pplax.spider.model.pojo.ArtistName" useGeneratedKeys="true">
     insert into artist_name
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="artistId != null">
@@ -65,7 +65,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="xyz.pplax.spiderdemo.model.pojo.ArtistName">
+  <update id="updateByPrimaryKeySelective" parameterType="xyz.pplax.spider.model.pojo.ArtistName">
     update artist_name
     <set>
       <if test="artistId != null">
@@ -86,7 +86,7 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="xyz.pplax.spiderdemo.model.pojo.ArtistName">
+  <update id="updateByPrimaryKey" parameterType="xyz.pplax.spider.model.pojo.ArtistName">
     update artist_name
     set artist_id = #{artistId,jdbcType=BIGINT},
       platform_id = #{platformId,jdbcType=INTEGER},

@@ -133,7 +133,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>${spring-boot.version}</version>
                 <configuration>
-                    <mainClass>xyz.pplax.spiderdemo.SpiderDemoApplication</mainClass>
+                    <mainClass>xyz.pplax.spider.SpiderDemoApplication</mainClass>
                     <skip>true</skip>
                 </configuration>
                 <executions>
