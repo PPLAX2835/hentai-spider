@@ -19,6 +19,12 @@
     from platform_artist
     where id = #{id,jdbcType=BIGINT}
   </select>
+  <select id="selectListByArtistId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from platform_artist
+    where artist_id = #{id,jdbcType=BIGINT}
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from platform_artist
     where id = #{id,jdbcType=BIGINT}

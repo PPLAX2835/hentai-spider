@@ -1,5 +1,6 @@
 package xyz.pplax.spider;
 
+import com.alibaba.fastjson2.JSON;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -11,6 +12,7 @@ import xyz.pplax.spider.spiders.FurAffinitySpider;
 import xyz.pplax.spider.utils.AsyncHttpUtil;
 
 import java.util.Date;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -23,12 +25,15 @@ class SpiderDemoApplicationTests {
     @Test
     public void mapperTest01() {
 
-        Artist artist = new Artist();
-        artist.setName("testname");
-        artist.setInsertAt(new Date());
-        artist.setUpdateAt(new Date());
+//        Artist artist = new Artist();
+//        artist.setName("testname");
+//        artist.setInsertAt(new Date());
+//        artist.setUpdateAt(new Date());
+//
+//        artistDao.insertSelective(artist);
 
-        artistDao.insertSelective(artist);
+        List<Artist> dne = artistDao.selectPageByName(0, 10, "oll");
+        System.out.println(JSON.toJSONString(dne));
 
     }
 
