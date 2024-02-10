@@ -1,7 +1,7 @@
 package xyz.pplax.spider.dao;
 
-import xyz.pplax.spider.model.pojo.Artist;
 import org.apache.ibatis.annotations.Mapper;
+import xyz.pplax.spider.model.pojo.Artist;
 
 @Mapper
 public interface ArtistDao {

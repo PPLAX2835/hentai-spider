@@ -5,13 +5,13 @@ import xyz.pplax.spider.model.pojo.Platform;
 
 @Mapper
 public interface PlatformDao {
-    int deleteByPrimaryKey(Integer id);
+    int deleteByPrimaryKey(Long id);
 
     int insert(Platform record);
 
     int insertSelective(Platform record);
 
-    Platform selectByPrimaryKey(Integer id);
+    Platform selectByPrimaryKey(Long id);
 
     int updateByPrimaryKeySelective(Platform record);
 

@@ -4,11 +4,12 @@
   <resultMap id="BaseResultMap" type="xyz.pplax.spider.model.pojo.Artist">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="platform_artist_id" jdbcType="VARCHAR" property="platformArtistId" />
     <result column="update_at" jdbcType="TIMESTAMP" property="updateAt" />
     <result column="insert_at" jdbcType="TIMESTAMP" property="insertAt" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, `name`, update_at, insert_at
+    id, `name`, platform_artist_id, update_at, insert_at
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -21,16 +22,19 @@
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="xyz.pplax.spider.model.pojo.Artist" useGeneratedKeys="true">
-    insert into artist (`name`, update_at, insert_at
-      )
-    values (#{name,jdbcType=VARCHAR}, #{updateAt,jdbcType=TIMESTAMP}, #{insertAt,jdbcType=TIMESTAMP}
-      )
+    insert into artist (`name`, platform_artist_id, update_at, 
+      insert_at)
+    values (#{name,jdbcType=VARCHAR}, #{platformArtistId,jdbcType=VARCHAR}, #{updateAt,jdbcType=TIMESTAMP}, 
+      #{insertAt,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="xyz.pplax.spider.model.pojo.Artist" useGeneratedKeys="true">
     insert into artist
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="name != null">
         `name`,
+      </if>
+      <if test="platformArtistId != null">
+        platform_artist_id,
       </if>
       <if test="updateAt != null">
         update_at,
@@ -42,6 +46,9 @@
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="name != null">
         #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="platformArtistId != null">
+        #{platformArtistId,jdbcType=VARCHAR},
       </if>
       <if test="updateAt != null">
         #{updateAt,jdbcType=TIMESTAMP},
@@ -57,6 +64,9 @@
       <if test="name != null">
         `name` = #{name,jdbcType=VARCHAR},
       </if>
+      <if test="platformArtistId != null">
+        platform_artist_id = #{platformArtistId,jdbcType=VARCHAR},
+      </if>
       <if test="updateAt != null">
         update_at = #{updateAt,jdbcType=TIMESTAMP},
       </if>
@@ -69,6 +79,7 @@
   <update id="updateByPrimaryKey" parameterType="xyz.pplax.spider.model.pojo.Artist">
     update artist
     set `name` = #{name,jdbcType=VARCHAR},
+      platform_artist_id = #{platformArtistId,jdbcType=VARCHAR},
       update_at = #{updateAt,jdbcType=TIMESTAMP},
       insert_at = #{insertAt,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
