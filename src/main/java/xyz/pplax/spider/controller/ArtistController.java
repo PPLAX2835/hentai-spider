@@ -28,6 +28,19 @@ public class ArtistController {
         return JSON.toJSONString(new ResponseResult(HttpStatus.SUCCESS, artistList.size(), artistList));
     }
 
+    @PostMapping(value = "")
+    public String add(@RequestParam(value = "name") String name) {
+        Artist artist = new Artist();
+        artist.setName(name);
+
+        Integer add = artistService.add(artist);
+        if (add != 0) {
+            return JSON.toJSONString(new ResponseResult(HttpStatus.SUCCESS));
+        }
+
+        return JSON.toJSONString(new ResponseResult(HttpStatus.INTERNAL_SERVER_ERROR));
+    }
+
     @PutMapping(value = "/{id}")
     public String update(@PathVariable Long id, @RequestParam(value = "name") String name) {
 

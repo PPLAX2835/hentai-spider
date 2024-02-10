@@ -6,6 +6,8 @@ import java.util.List;
 
 public interface ArtistService {
 
+    public Integer add(Artist artist);
+
     public List<Artist> getPageByKeyword(int page, int limit, String keyword);
 
     public Integer updateSelectiveById(Artist artist);

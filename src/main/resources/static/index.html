@@ -18,6 +18,7 @@
                         <input class="layui-input" name="id" id="keyword-input" autocomplete="off">
                     </div>
                     <button class="layui-btn" data-type="reload" id="search-btn">搜索</button>
+                    <button class="layui-btn" id="add-btn">添加</button>
                 </div>
             </div>
 
@@ -56,11 +57,17 @@
 
             //行工具栏按钮单击事件（双击事件为：rowDouble）
             table.on('tool(artist-table)', function(obj){
+                let id = obj.data.id;
+                if (id === ''){
+                    obj.del();
+                    return;
+                }
+
                 if(obj.event === 'delete'){
                     layer.confirm('真的删除行么', function(index){
                         $.ajax({
                             type: "DELETE",
-                            url: '/api/artist/' + obj.data.id,
+                            url: '/api/artist/' + id,
                             processData:false,
                             contentType:false,
                             success: function(res) {
@@ -86,20 +93,46 @@
                 let newName = obj.value;
                 let id = obj.data.id;
 
+                if (newName === '') {
+                    return;
+                }
+
                 var formdata=new FormData();
 
                 formdata.append("name", newName);
 
-                $.ajax({
-                    type: "PUT",
-                    url: '/api/artist/' + id,
-                    processData:false,
-                    contentType:false,
-                    data: formdata,
-                    success: function(res) {
-                        layer.msg(res);
-                    }
-                });
+                if (id !== '') {
+                    $.ajax({
+                        type: "PUT",
+                        url: '/api/artist/' + id,
+                        processData:false,
+                        contentType:false,
+                        data: formdata,
+                        success: function(res) {
+                            layer.msg(res);
+                        }
+                    });
+                } else {
+                    $.ajax({
+                        type: "POST",
+                        url: '/api/artist',
+                        processData:false,
+                        contentType:false,
+                        data: formdata,
+                        success: function(res) {
+                            layer.msg(res);
+                            table.reload('artistReload', {
+                                url: '/api/artist',
+                                page: {
+                                    curr: 1 //重新从第 1 页开始
+                                }
+                                ,where: {
+                                    keyword: $('#keyword-input').val()
+                                }
+                            })
+                        }
+                    });
+                }
 
             });
 
@@ -107,6 +140,7 @@
                 reload: function(){
                     //执行重载
                     table.reload('artistReload', {
+                        url: '/api/artist',
                         page: {
                             curr: 1 //重新从第 1 页开始
                         }
@@ -120,6 +154,21 @@
             $('#search-btn').on('click', function(){
                 var type = $(this).data('type');
                 active[type] ? active[type].call(this) : '';
+            });
+
+            $('#add-btn').on('click', function(){
+                let olddata = layui.table.cache.artistReload;
+                let newRow= {
+                    "id": '',
+                    "insertAt": '',
+                    "name": '',
+                    "updateAt": ''
+                };
+                olddata.push(newRow);
+                table.reload('artistReload', {
+                    url: null,
+                    data: olddata
+                })
             });
 
         })

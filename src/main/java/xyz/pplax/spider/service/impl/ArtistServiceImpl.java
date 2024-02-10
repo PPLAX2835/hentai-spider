@@ -25,6 +25,11 @@ public class ArtistServiceImpl implements ArtistService {
     private PlatformArtistDao platformArtistDao;
 
     @Override
+    public Integer add(Artist artist) {
+        return artistDao.insertSelective(artist);
+    }
+
+    @Override
     public List<Artist> getPageByKeyword(int page, int limit, String keyword) {
         return artistDao.selectPageByName((page - 1) * limit, limit, keyword);
     }
