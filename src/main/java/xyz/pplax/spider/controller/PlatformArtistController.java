@@ -7,9 +7,9 @@ import xyz.pplax.spider.model.http.HttpStatus;
 import xyz.pplax.spider.model.http.ResponseResult;
 import xyz.pplax.spider.model.pojo.Artist;
 import xyz.pplax.spider.model.pojo.PlatformArtist;
+import xyz.pplax.spider.model.vo.PlatformArtistVO;
 import xyz.pplax.spider.service.PlatformArtistService;
 
-import javax.websocket.server.PathParam;
 import java.util.List;
 
 @RestController
@@ -21,9 +21,26 @@ public class PlatformArtistController {
 
     @GetMapping(value = "/{id}")
     public String getListByArtistId(@PathVariable("id") Long id) {
-        List<PlatformArtist> platformArtistList = platformArtistService.getListByArtistId(id);
+        List<PlatformArtistVO> platformArtistVOList = platformArtistService.getVoListByArtistId(id);
 
-        return JSON.toJSONString(new ResponseResult(HttpStatus.SUCCESS, platformArtistList.size(), platformArtistList));
+        return JSON.toJSONString(new ResponseResult(HttpStatus.SUCCESS, platformArtistVOList.size(), platformArtistVOList));
+    }
+
+    @PutMapping(value = "/{id}")
+    public String update(@PathVariable("id") Long id, @RequestParam("platformArtistName") String platformArtistName, @RequestParam("platformUrl") String platformUrl) {
+
+        PlatformArtist platformArtist = new PlatformArtist();
+        platformArtist.setId(id);
+        platformArtist.setName(platformArtistName);
+        platformArtist.setHomepageUrl(platformUrl);
+
+        Integer res = platformArtistService.updateSelectiveById(platformArtist);
+
+        if (res != 0) {
+            return JSON.toJSONString(new ResponseResult(HttpStatus.SUCCESS));
+        }
+
+        return JSON.toJSONString(new ResponseResult(HttpStatus.INTERNAL_SERVER_ERROR));
     }
 
 }

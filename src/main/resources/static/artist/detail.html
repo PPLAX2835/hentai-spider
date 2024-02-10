@@ -41,9 +41,11 @@
                 cellMinWidth: 120,
                 cols: [[
                     // {checkbox: true, fixed: true},
-                    {field:'artistId', title: 'artistId', width: 50, sort: true, fixed: true},
-                    {field:'name', title: '该平台昵称', width: 50, sort: true, fixed: true},
-                    {field:'homepageUrl', title: '该平台主页', minWidth: 80, sort: true, fixed: true},
+                    {field:'platformArtistId', title: 'platformArtistId', width: 30, sort: true, fixed: true},
+                    {field:'platformArtistName', edit:'text', title: '该平台昵称', minWidth: 50, sort: true, fixed: true},
+                    {field:'homepageUrl', edit:'text', title: '该平台主页', minWidth: 80, sort: true, fixed: true},
+                    {field:'platformName', title: '平台名', minWidth: 80, sort: true, fixed: true},
+                    {field:'platformUrl', title: '平台地址', minWidth: 80, sort: true, fixed: true},
                     {fixed: 'right', title: '操作', minWidth: 80, align: 'center', toolbar: '#platform-artist-table-theads-tool'}
                 ]]
             });
@@ -56,21 +58,36 @@
                         obj.del();
                         layer.close(index);
                     });
-                } else if(obj.event === 'edit'){
-                    layer.open({
-                        title: '编辑',
-                        type: 1,
-                        area: ['80%','80%'],
-                        content: '<div style="padding: 16px;">自定义表单元素</div>'
-                    });
-                } else if (obj.event === 'platformView') {
-                    layer.open({
-                        title: '详情',
-                        type: 1,
-                        area: ['80%','20%'],
-                        content: '<div>平台名:' + obj.data.platform.name + '</div> <div>地址：' + obj.data.platform.url + '</div>'
-                    });
                 }
+            });
+
+
+            // 行编辑事件
+            table.on('edit(platform-artist-table)', function(obj){
+                let id = obj.data.platformArtistId;
+                let newPlatformArtistName = obj.data.platformArtistName;
+                let newHomepageUrl = obj.data.homepageUrl;
+
+                console.log(id)
+                console.log(newPlatformArtistName)
+                console.log(newHomepageUrl)
+
+                var formdata = new FormData();
+
+                formdata.append("platformArtistName", newPlatformArtistName);
+                formdata.append("platformUrl", newHomepageUrl);
+
+                $.ajax({
+                    type: "PUT",
+                    url: '/api/platformArtist/' + id,
+                    processData:false,
+                    contentType:false,
+                    data: formdata,
+                    success: function(res) {
+                        layer.msg(res);
+                    }
+                });
+
             });
 
         })
@@ -78,8 +95,6 @@
 
     <script type="text/html" id="platform-artist-table-theads-tool">
         <div class="layui-btn-container">
-            <a type="button" class="layui-btn layui-btn-primary layui-btn-sm" lay-event="platformView">查看平台</a>
-            <a type="button" class="layui-btn layui-btn-primary layui-btn-sm" lay-event="edit">编辑</a>
             <a type="button" class="layui-btn layui-btn-primary layui-btn-sm" lay-event="delete">删除</a>
         </div>
     </script>
