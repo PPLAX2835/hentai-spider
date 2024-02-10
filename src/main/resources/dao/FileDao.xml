@@ -33,6 +33,13 @@
     where artist_id = #{id,jdbcType=BIGINT}
     limit #{limit,jdbcType=INTEGER}, #{offset,jdbcType=INTEGER}
   </select>
+  <select id="selectPageByPlatformId" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from file
+    where platform_id = #{id,jdbcType=BIGINT}
+    limit #{limit,jdbcType=INTEGER}, #{offset,jdbcType=INTEGER}
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from file
     where id = #{id,jdbcType=BIGINT}

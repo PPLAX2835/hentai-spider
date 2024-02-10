@@ -17,6 +17,8 @@ public interface PlatformArtistDao {
 
     List<PlatformArtist> selectListByArtistId(Long id);
 
+    List<PlatformArtist> selectListByPlatformId(Long id);
+
     int updateByPrimaryKeySelective(PlatformArtist record);
 
     int updateByPrimaryKey(PlatformArtist record);

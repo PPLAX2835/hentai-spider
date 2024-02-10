@@ -46,12 +46,12 @@ public class ArtistController {
 
 
     @DeleteMapping(value = "/{id}")
-    public String update(@PathVariable Long id) {
+    public String delete(@PathVariable Long id) {
 
 
         Integer res = artistService.deleteById(id);
 
-        if (res != 0) {
+        if (res > 0) {
             return JSON.toJSONString(new ResponseResult(HttpStatus.SUCCESS));
         }
 

@@ -43,4 +43,15 @@ public class PlatformArtistController {
         return JSON.toJSONString(new ResponseResult(HttpStatus.INTERNAL_SERVER_ERROR));
     }
 
+    @DeleteMapping(value = "/{id}")
+    public String delete(@PathVariable Long id) {
+
+        Integer res = platformArtistService.deleteById(id);
+        if (res > 0) {
+            return JSON.toJSONString(new ResponseResult(HttpStatus.SUCCESS));
+        }
+
+        return JSON.toJSONString(new ResponseResult(HttpStatus.INTERNAL_SERVER_ERROR.getCode(), "删除失败"));
+    }
+
 }

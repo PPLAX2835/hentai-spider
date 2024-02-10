@@ -59,4 +59,10 @@ public class PlatformArtistServiceImpl implements PlatformArtistService {
     public Integer updateSelectiveById(PlatformArtist platformArtist) {
         return platformArtistDao.updateByPrimaryKeySelective(platformArtist);
     }
+
+    @Override
+    public Integer deleteById(Long id) {
+        return platformArtistDao.deleteByPrimaryKey(id);
+    }
+
 }

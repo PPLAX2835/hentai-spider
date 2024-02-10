@@ -43,8 +43,8 @@
                     // {checkbox: true, fixed: true},
                     {field:'platformArtistId', title: 'platformArtistId', width: 30, sort: true, fixed: true},
                     {field:'platformArtistName', edit:'text', title: '该平台昵称', minWidth: 50, sort: true, fixed: true},
-                    {field:'homepageUrl', edit:'text', title: '该平台主页', minWidth: 80, sort: true, fixed: true},
                     {field:'platformName', title: '平台名', minWidth: 80, sort: true, fixed: true},
+                    {field:'homepageUrl', edit:'text', title: '该平台主页', minWidth: 80, sort: true, fixed: true},
                     {field:'platformUrl', title: '平台地址', minWidth: 80, sort: true, fixed: true},
                     {fixed: 'right', title: '操作', minWidth: 80, align: 'center', toolbar: '#platform-artist-table-theads-tool'}
                 ]]
@@ -53,8 +53,20 @@
 
             //行单击事件（双击事件为：rowDouble）
             table.on('tool(platform-artist-table)', function(obj){
+                let id = obj.data.platformArtistId;
+
                 if(obj.event === 'delete'){
                     layer.confirm('真的删除行么', function(index){
+                        $.ajax({
+                            type: "DELETE",
+                            url: '/api/platformArtist/' + id,
+                            processData:false,
+                            contentType:false,
+                            success: function(res) {
+                                layer.msg(res);
+                            }
+                        });
+
                         obj.del();
                         layer.close(index);
                     });
@@ -67,10 +79,6 @@
                 let id = obj.data.platformArtistId;
                 let newPlatformArtistName = obj.data.platformArtistName;
                 let newHomepageUrl = obj.data.homepageUrl;
-
-                console.log(id)
-                console.log(newPlatformArtistName)
-                console.log(newHomepageUrl)
 
                 var formdata = new FormData();
 

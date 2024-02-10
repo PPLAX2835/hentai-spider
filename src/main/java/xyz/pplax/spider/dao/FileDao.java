@@ -18,6 +18,8 @@ public interface FileDao {
 
     List<File> selectPageByArtistId(@Param("limit") Integer limit, @Param("offset") Integer offset, @Param("id") Long id);
 
+    List<File> selectPageByPlatformId(@Param("limit") Integer limit, @Param("offset") Integer offset, @Param("id") Long id);
+
     int updateByPrimaryKeySelective(File record);
 
     int updateByPrimaryKey(File record);

@@ -9,18 +9,21 @@
 
     <div class="layui-row">
 
-        <div class="layui-row">
-            <div>
-                搜索昵称：
-                <div class="layui-inline">
-                    <input class="layui-input" name="id" id="keyword-input" autocomplete="off">
+        <div class="layui-panel">
+            <h1>作者管理</h1>
+            <div class="layui-row">
+                <div>
+                    搜索昵称：
+                    <div class="layui-inline">
+                        <input class="layui-input" name="id" id="keyword-input" autocomplete="off">
+                    </div>
+                    <button class="layui-btn" data-type="reload" id="search-btn">搜索</button>
                 </div>
-                <button class="layui-btn" data-type="reload" id="search-btn">搜索</button>
             </div>
-        </div>
 
-        <div class="layui-row">
-            <table class="layui-hide" id="artist-table" lay-filter="artist-table"></table>
+            <div class="layui-row">
+                <table class="layui-hide" id="artist-table" lay-filter="artist-table"></table>
+            </div>
         </div>
 
     </div>
