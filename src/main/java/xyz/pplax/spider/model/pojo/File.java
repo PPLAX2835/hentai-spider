@@ -13,7 +13,7 @@ public class File implements Serializable {
     /**
      * 主键
      */
-    private Integer id;
+    private Long id;
 
     /**
      * 作者id
@@ -23,7 +23,7 @@ public class File implements Serializable {
     /**
      * 平台id
      */
-    private Integer platformId;
+    private Long platformId;
 
     /**
      * 在该平台的id

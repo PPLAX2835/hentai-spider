@@ -61,9 +61,8 @@
                             processData:false,
                             contentType:false,
                             success: function(res) {
-                                if (respJson.code !== 0) {
-                                    obj.del();
-                                }
+                                layer.msg(res);
+                                obj.del();
                             }
                         });
 
@@ -95,9 +94,7 @@
                     contentType:false,
                     data: formdata,
                     success: function(res) {
-                        if (respJson.code !== 0) {
-                            layer.msg(res);
-                        }
+                        layer.msg(res);
                     }
                 });
 

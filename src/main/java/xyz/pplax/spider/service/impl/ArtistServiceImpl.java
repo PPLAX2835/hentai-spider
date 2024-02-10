@@ -6,6 +6,7 @@ import xyz.pplax.spider.dao.ArtistDao;
 import xyz.pplax.spider.dao.FileDao;
 import xyz.pplax.spider.dao.PlatformArtistDao;
 import xyz.pplax.spider.model.pojo.Artist;
+import xyz.pplax.spider.model.pojo.File;
 import xyz.pplax.spider.model.pojo.PlatformArtist;
 import xyz.pplax.spider.service.ArtistService;
 
@@ -35,6 +36,15 @@ public class ArtistServiceImpl implements ArtistService {
 
     @Override
     public Integer deleteById(Long id) {
+        List<PlatformArtist> platformArtistList = platformArtistDao.selectListByArtistId(id);
+        if (platformArtistList.size() > 0) {
+            return 0;
+        }
+        List<File> files = fileDao.selectPageByArtistId(0, 1, id);
+        if (files.size() > 0) {
+            return 0;
+        }
+
         return artistDao.deleteByPrimaryKey(id);
     }
 }

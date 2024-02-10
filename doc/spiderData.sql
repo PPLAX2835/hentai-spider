@@ -7,7 +7,6 @@ use spiderData;
 create table artist (
     id bigint not null auto_increment                                                   comment '主键',
     name varchar(255) not null                                                          comment '作者昵称',
-    platform_artist_id varchar(255) default null                                        comment '作者在对应平台的信息id，用,分开',
     update_at datetime default current_timestamp on update current_timestamp            comment '更新时间',
     insert_at datetime default current_timestamp                                        comment '添加时间',
     primary key (id)
@@ -34,7 +33,7 @@ create table platform (
 ) comment '平台表';
 
 create table file (
-    id integer not null auto_increment                                                  comment '主键',
+    id bigint not null auto_increment                                                  comment '主键',
     artist_id bigint not null                                                           comment '作者id',
     platform_id integer not null                                                        comment '平台id',
     id_in_platform varchar(255) unique not null                                         comment '在该平台的id',

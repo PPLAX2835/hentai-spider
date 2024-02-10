@@ -44,4 +44,18 @@ public class ArtistController {
         return JSON.toJSONString(new ResponseResult(HttpStatus.INTERNAL_SERVER_ERROR));
     }
 
+
+    @DeleteMapping(value = "/{id}")
+    public String update(@PathVariable Long id) {
+
+
+        Integer res = artistService.deleteById(id);
+
+        if (res != 0) {
+            return JSON.toJSONString(new ResponseResult(HttpStatus.SUCCESS));
+        }
+
+        return JSON.toJSONString(new ResponseResult(HttpStatus.INTERNAL_SERVER_ERROR.getCode(), "删除失败，该作者下可能还有其他数据"));
+    }
+
 }
