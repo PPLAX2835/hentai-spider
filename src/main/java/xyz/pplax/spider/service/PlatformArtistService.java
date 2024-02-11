@@ -13,5 +13,7 @@ public interface PlatformArtistService {
 
     public Integer updateSelectiveById(PlatformArtist platformArtist);
 
+    public Integer insertSelective(PlatformArtist platformArtist);
+
     public Integer deleteById(Long id);
 }

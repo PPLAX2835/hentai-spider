@@ -61,6 +61,11 @@ public class PlatformArtistServiceImpl implements PlatformArtistService {
     }
 
     @Override
+    public Integer insertSelective(PlatformArtist platformArtist) {
+        return platformArtistDao.insertSelective(platformArtist);
+    }
+
+    @Override
     public Integer deleteById(Long id) {
         return platformArtistDao.deleteByPrimaryKey(id);
     }

@@ -12,6 +12,7 @@
         <div class="layui-row">
             <legend id="aid"></legend>
             <legend id="aname"></legend>
+            <button class="layui-btn" id="refresh-btn">刷新</button>
             <button class="layui-btn" id="add-btn">添加</button>
             <table class="layui-hide" id="platform-artist-table" lay-filter="platform-artist-table"></table>
         </div>
@@ -24,12 +25,9 @@
 
     <script>
         // 获得作者id，昵称
-        let id = getUrlParams(window.location.href).id;
-        let name = getUrlParams(window.location.href).name;
-
         let $ = layui.$;
-        $('#aid').text("ID：" + id);
-        $("#aname").text("name：" + name)
+        $('#aid').text("ID：" + getUrlParams(window.location.href).id);
+        $("#aname").text("name：" + getUrlParams(window.location.href).name)
 
         layui.use(function () {
             var table = layui.table;
@@ -37,10 +35,34 @@
             var form = layui.form;
 
 
+            $('#refresh-btn').on('click', function(){
+                table.reload('platformArtistReload', {
+                    url: '/api/platformArtist/' + getUrlParams(window.location.href).id
+                })
+            });
+
+            $('#add-btn').on('click', function(){
+                let olddata = layui.table.cache.platformArtistReload;
+                let newRow= {
+                    "artistId": '',
+                    "homepageUrl": '',
+                    "platformArtistId": '',
+                    "platformArtistName": '',
+                    "platformId": '',
+                    "platformName": '',
+                    "platformUrl": ''
+                };
+                olddata.push(newRow);
+                table.reload('platformArtistReload', {
+                    url: null,
+                    data: olddata
+                })
+            });
+
             table.render({
                 elem: '#platform-artist-table', // 指定table模板  也就是上方的table DOM
                 height: 400, // 指定Table模板的高度
-                url: '/api/platformArtist/' + id, // 对应的数据接口，这边直接是请求的json文件
+                url: '/api/platformArtist/' + getUrlParams(window.location.href).id,     // 对应的数据接口，这边直接是请求的json文件
                 cellMinWidth: 120,
                 id: 'platformArtistReload',
                 cols: [[
@@ -92,19 +114,41 @@
 
                         var formdata = new FormData();
 
+                        formdata.append("artistId", getUrlParams(window.location.href).id);
                         formdata.append("platformArtistName", newPlatformArtistName);
-                        formdata.append("platformUrl", newHomepageUrl);
+                        formdata.append("homepageUdl", newHomepageUrl);
 
-                        $.ajax({
-                            type: "PUT",
-                            url: '/api/platformArtist/' + id,
-                            processData:false,
-                            contentType:false,
-                            data: formdata,
-                            success: function(res) {
-                                layer.msg(res);
-                            }
-                        });
+
+                        if (id === '') {
+                            $.ajax({
+                                type: "POST",
+                                url: '/api/platformArtist/',
+                                processData:false,
+                                contentType:false,
+                                data: formdata,
+                                success: function(res) {
+                                    table.reload('platformArtistReload', {
+                                        url: '/api/platformArtist/' + getUrlParams(window.location.href).id
+                                    })
+                                    layer.msg(res);
+                                }
+                            });
+
+                        } else {
+                            $.ajax({
+                                type: "PUT",
+                                url: '/api/platformArtist/' + id,
+                                processData:false,
+                                contentType:false,
+                                data: formdata,
+                                success: function(res) {
+                                    table.reload('platformArtistReload', {
+                                        url: '/api/platformArtist/' + getUrlParams(window.location.href).id
+                                    })
+                                    layer.msg(res);
+                                }
+                            });
+                        }
                     });
 
 
