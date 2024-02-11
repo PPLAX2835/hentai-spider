@@ -10,20 +10,14 @@
     <div class="layui-row">
 
         <div class="layui-panel">
-            <h1>作者管理</h1>
+            <h1>平台管理</h1>
+            <a href="artist.html"><h3>作者管理</h3></a>
             <div class="layui-row">
-                <div>
-                    搜索昵称：
-                    <div class="layui-inline">
-                        <input class="layui-input" name="id" id="keyword-input" autocomplete="off">
-                    </div>
-                    <button class="layui-btn" data-type="reload" id="search-btn">搜索</button>
-                    <button class="layui-btn" id="add-btn">添加</button>
-                </div>
+                <button class="layui-btn" id="add-btn">添加</button>
             </div>
 
             <div class="layui-row">
-                <table class="layui-hide" id="artist-table" lay-filter="artist-table"></table>
+                <table class="layui-hide" id="platform-table" lay-filter="platform-table"></table>
             </div>
         </div>
 
@@ -39,24 +33,25 @@
             var layer = layui.layer;
 
             table.render({
-                elem: '#artist-table', // 指定table模板  也就是上方的table DOM
+                elem: '#platform-table', // 指定table模板  也就是上方的table DOM
                 height: 400, // 指定Table模板的高度
-                url: '/api/artist', // 对应的数据接口，这边直接是请求的json文件
+                url: '/api/platform', // 对应的数据接口，这边直接是请求的json文件
                 limit: 10,
                 limits:[10],
                 cellMinWidth: 120,
                 page: true, // 开启分页
-                id: 'artistReload',
+                id: 'platformReload',
                 cols: [[
                     // {checkbox: true, fixed: true},
                     {field:'id', title: 'ID', width: 50, sort: true, fixed: true},
-                    {field:'name', edit: 'text', title: '昵称'},
-                    {fixed: 'right', title: '操作', minWidth: 80, align: 'center', toolbar: '#artist-table-theads-tool'}
+                    {field:'name', edit: 'text', title: '平台名'},
+                    {field:'url', edit: 'text', title: '地址'},
+                    {fixed: 'right', title: '操作', minWidth: 80, align: 'center', toolbar: '#platform-table-theads-tool'}
                 ]]
             });
 
             //行工具栏按钮单击事件（双击事件为：rowDouble）
-            table.on('tool(artist-table)', function(obj){
+            table.on('tool(platform-table)', function(obj){
                 let id = obj.data.id;
                 if (id === ''){
                     obj.del();
@@ -67,7 +62,7 @@
                     layer.confirm('真的删除行么', function(index){
                         $.ajax({
                             type: "DELETE",
-                            url: '/api/artist/' + id,
+                            url: '/api/platform/' + id,
                             processData:false,
                             contentType:false,
                             success: function(res) {
@@ -76,35 +71,32 @@
                             }
                         });
 
-                        layer.close(index);
-                    });
-                } else if (obj.event === 'detail') {
-                    layer.open({
-                        title: '详情',
-                        type: 1,
-                        area: ['80%','80%'],
-                        content: '<iframe width="99%" height="90%" src="artist/detail.html?id=' + obj.data.id + '&name=' + obj.data.name + '"></iframe>'
+                        layer.close(platform);
                     });
                 }
             });
 
             // 行编辑事件
-            table.on('edit(artist-table)', function(obj){
-                let newName = obj.value;
+            table.on('edit(platform-table)', function(obj){
+                console.log(obj.data)
+
+                let newName = obj.data.name;
+                let newUrl = obj.data.url;
                 let id = obj.data.id;
 
-                if (newName === '') {
+                if (newName === '' && newUrl === '') {
                     return;
                 }
 
                 var formdata=new FormData();
 
                 formdata.append("name", newName);
+                formdata.append("url", newUrl);
 
                 if (id !== '') {
                     $.ajax({
                         type: "PUT",
-                        url: '/api/artist/' + id,
+                        url: '/api/platform/' + id,
                         processData:false,
                         contentType:false,
                         data: formdata,
@@ -115,14 +107,14 @@
                 } else {
                     $.ajax({
                         type: "POST",
-                        url: '/api/artist',
+                        url: '/api/platform',
                         processData:false,
                         contentType:false,
                         data: formdata,
                         success: function(res) {
                             layer.msg(res);
-                            table.reload('artistReload', {
-                                url: '/api/artist',
+                            table.reload('platformReload', {
+                                url: '/api/platform',
                                 page: {
                                     curr: 1 //重新从第 1 页开始
                                 }
@@ -139,8 +131,8 @@
             var $ = layui.$, active = {
                 reload: function(){
                     //执行重载
-                    table.reload('artistReload', {
-                        url: '/api/artist',
+                    table.reload('platformReload', {
+                        url: '/api/platform',
                         page: {
                             curr: 1 //重新从第 1 页开始
                         }
@@ -157,15 +149,16 @@
             });
 
             $('#add-btn').on('click', function(){
-                let olddata = layui.table.cache.artistReload;
+                let olddata = layui.table.cache.platformReload;
                 let newRow= {
                     "id": '',
                     "insertAt": '',
                     "name": '',
+                    "url": '',
                     "updateAt": ''
                 };
                 olddata.push(newRow);
-                table.reload('artistReload', {
+                table.reload('platformReload', {
                     url: null,
                     data: olddata
                 })
@@ -174,9 +167,8 @@
         })
     </script>
 
-    <script type="text/html" id="artist-table-theads-tool">
+    <script type="text/html" id="platform-table-theads-tool">
         <div class="layui-btn-container">
-            <a type="button" class="layui-btn layui-btn-primary layui-btn-sm" lay-event="detail">查看所有平台作者信息</a>
             <a type="button" class="layui-btn layui-btn-primary layui-btn-sm" lay-event="delete">删除</a>
         </div>
     </script>

@@ -47,4 +47,14 @@ public class PlatformServiceImpl implements PlatformService {
     public List<Platform> getList() {
         return platformDao.selectAll();
     }
+
+    @Override
+    public Integer add(Platform platform) {
+        return platformDao.insertSelective(platform);
+    }
+
+    @Override
+    public Integer updateSelectiveById(Platform platform) {
+        return platformDao.updateByPrimaryKeySelective(platform);
+    }
 }

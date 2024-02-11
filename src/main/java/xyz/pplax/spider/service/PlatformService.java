@@ -10,4 +10,8 @@ public interface PlatformService {
 
     List<Platform> getList();
 
+    Integer add(Platform platform);
+
+    Integer updateSelectiveById(Platform platform);
+
 }
