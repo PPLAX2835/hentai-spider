@@ -6,6 +6,7 @@ import xyz.pplax.spider.dao.FileDao;
 import xyz.pplax.spider.dao.PlatformArtistDao;
 import xyz.pplax.spider.dao.PlatformDao;
 import xyz.pplax.spider.model.pojo.File;
+import xyz.pplax.spider.model.pojo.Platform;
 import xyz.pplax.spider.model.pojo.PlatformArtist;
 import xyz.pplax.spider.service.PlatformService;
 
@@ -36,5 +37,14 @@ public class PlatformServiceImpl implements PlatformService {
         }
 
         return platformDao.deleteByPrimaryKey(id);
+    }
+
+    /**
+     * 因为平台就那几个，分页就没必要了
+     * @return
+     */
+    @Override
+    public List<Platform> getList() {
+        return platformDao.selectAll();
     }
 }

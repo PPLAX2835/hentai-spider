@@ -3,6 +3,8 @@ package xyz.pplax.spider.dao;
 import org.apache.ibatis.annotations.Mapper;
 import xyz.pplax.spider.model.pojo.Platform;
 
+import java.util.List;
+
 @Mapper
 public interface PlatformDao {
     int deleteByPrimaryKey(Long id);
@@ -12,6 +14,8 @@ public interface PlatformDao {
     int insertSelective(Platform record);
 
     Platform selectByPrimaryKey(Long id);
+
+    List<Platform> selectAll();
 
     int updateByPrimaryKeySelective(Platform record);
 

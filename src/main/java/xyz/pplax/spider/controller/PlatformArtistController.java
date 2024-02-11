@@ -27,12 +27,23 @@ public class PlatformArtistController {
     }
 
     @PutMapping(value = "/{id}")
-    public String update(@PathVariable("id") Long id, @RequestParam("platformArtistName") String platformArtistName, @RequestParam("platformUrl") String platformUrl) {
+    public String update(
+            @PathVariable("id") Long id,
+            @RequestParam(name = "platformArtistName", required = false) String platformArtistName,
+            @RequestParam(name = "platformUrl", required = false) String platformUrl,
+            @RequestParam(name = "platformId", required = false) Long platformId) {
 
         PlatformArtist platformArtist = new PlatformArtist();
         platformArtist.setId(id);
-        platformArtist.setName(platformArtistName);
-        platformArtist.setHomepageUrl(platformUrl);
+        if (platformArtistName != null && !"".equals(platformArtistName)) {
+            platformArtist.setName(platformArtistName);
+        }
+        if (platformUrl != null && !"".equals(platformUrl)) {
+            platformArtist.setHomepageUrl(platformUrl);
+        }
+        if (platformId != null) {
+            platformArtist.setPlatformId(platformId);
+        }
 
         Integer res = platformArtistService.updateSelectiveById(platformArtist);
 

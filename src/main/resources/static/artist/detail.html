@@ -12,6 +12,7 @@
         <div class="layui-row">
             <legend id="aid"></legend>
             <legend id="aname"></legend>
+            <button class="layui-btn" id="add-btn">添加</button>
             <table class="layui-hide" id="platform-artist-table" lay-filter="platform-artist-table"></table>
         </div>
 
@@ -30,9 +31,11 @@
         $('#aid').text("ID：" + id);
         $("#aname").text("name：" + name)
 
+        layui.use(function () {
+            var table = layui.table;
+            var dropdown = layui.dropdown;
+            var form = layui.form;
 
-        layui.use('table', function () {
-            var table = layui.table
 
             table.render({
                 elem: '#platform-artist-table', // 指定table模板  也就是上方的table DOM
@@ -43,59 +46,118 @@
                     // {checkbox: true, fixed: true},
                     {field:'platformArtistId', title: 'platformArtistId', width: 30, sort: true, fixed: true},
                     {field:'platformArtistName', edit:'text', title: '该平台昵称', minWidth: 50, sort: true, fixed: true},
-                    {field:'platformName', title: '平台名', minWidth: 80, sort: true, fixed: true},
+                    // {field:'platformName', title: '平台名', minWidth: 80, sort: true, fixed: true},
                     {field:'homepageUrl', edit:'text', title: '该平台主页', minWidth: 80, sort: true, fixed: true},
                     {field:'platformUrl', title: '平台地址', minWidth: 80, sort: true, fixed: true},
-                    {fixed: 'right', title: '操作', minWidth: 80, align: 'center', toolbar: '#platform-artist-table-theads-tool'}
-                ]]
-            });
+                    {field: 'platformName', title: '平台', width:115, unresize: true, align: 'center', templet: '#dropdpwn-theads-tool'},
+                    {fixed: 'right', title: '操作', minWidth: 80, align: 'center', toolbar: '#platform-artist-table-theads-tool'},
+                ]],
+                done: function () {
+                    var options = this;
 
+                    // 获取当前行数据
+                    table.getRowData = function(tableId, elem){
+                        var index = $(elem).closest('tr').data('index');
+                        return table.cache[tableId][index] || {};
+                    };
 
-            //行单击事件（双击事件为：rowDouble）
-            table.on('tool(platform-artist-table)', function(obj){
-                let id = obj.data.platformArtistId;
+                    //行单击事件（双击事件为：rowDouble）
+                    table.on('tool(platform-artist-table)', function(obj){
+                        let id = obj.data.platformArtistId;
 
-                if(obj.event === 'delete'){
-                    layer.confirm('真的删除行么', function(index){
+                        if(obj.event === 'delete'){
+                            layer.confirm('真的删除行么', function(index){
+                                $.ajax({
+                                    type: "DELETE",
+                                    url: '/api/platformArtist/' + id,
+                                    processData:false,
+                                    contentType:false,
+                                    success: function(res) {
+                                        layer.msg(res);
+                                    }
+                                });
+
+                                obj.del();
+                                layer.close(index);
+                            });
+                        }
+                    });
+
+                    // 行编辑事件
+                    table.on('edit(platform-artist-table)', function(obj){
+                        let id = obj.data.platformArtistId;
+                        let newPlatformArtistName = obj.data.platformArtistName;
+                        let newHomepageUrl = obj.data.homepageUrl;
+
+                        var formdata = new FormData();
+
+                        formdata.append("platformArtistName", newPlatformArtistName);
+                        formdata.append("platformUrl", newHomepageUrl);
+
                         $.ajax({
-                            type: "DELETE",
+                            type: "PUT",
                             url: '/api/platformArtist/' + id,
                             processData:false,
                             contentType:false,
+                            data: formdata,
                             success: function(res) {
                                 layer.msg(res);
                             }
                         });
-
-                        obj.del();
-                        layer.close(index);
                     });
+
+
+                    // 获取平台列表，并生成到下拉框中
+                    $.ajax({
+                        type: "GET",
+                        url: '/api/platform/',
+                        processData:false,
+                        contentType:false,
+                        success: function(res) {
+                            var resData = $.parseJSON(res).data;
+                            var newResData = [];
+                            for (let i = 0; i < resData.length; i++) {
+                                resData[i].title = resData[i].name;
+                                delete resData[i].name;
+                                newResData.push(resData[i]);
+                            }
+                            // dropdown 方式的下拉选择
+                            dropdown.render({
+                                elem: '#platform-name-dropdown-btn',
+                                // trigger: 'hover',
+                                // 此处的 data 值，可根据 done 返回的 res 遍历来赋值
+                                data: newResData,
+                                click: function(obj){
+                                    var rowData = table.getRowData(options.id, this.elem); // 获取当前行数据(如 id 等字段，以作为数据修改的索引)
+                                    var platformArtistId = rowData.platformArtistId;
+                                    var platformId = obj.id;
+                                    var that = this;
+
+                                    var formdata = new FormData();
+
+                                    formdata.append("platformId", platformId);
+
+                                    $.ajax({
+                                        type: "PUT",
+                                        url: '/api/platformArtist/' + platformArtistId,
+                                        processData:false,
+                                        contentType:false,
+                                        data: formdata,
+                                        success: function(res) {
+                                            that.elem.find('span').html(obj.title);
+                                            // 更新数据中对应的字段
+                                            rowData.platformName = obj.title;
+                                            // 显示
+                                            layer.msg(res);
+                                        }
+                                    });
+
+                                }
+                            });
+                        }
+                    });
+
                 }
-            });
-
-
-            // 行编辑事件
-            table.on('edit(platform-artist-table)', function(obj){
-                let id = obj.data.platformArtistId;
-                let newPlatformArtistName = obj.data.platformArtistName;
-                let newHomepageUrl = obj.data.homepageUrl;
-
-                var formdata = new FormData();
-
-                formdata.append("platformArtistName", newPlatformArtistName);
-                formdata.append("platformUrl", newHomepageUrl);
-
-                $.ajax({
-                    type: "PUT",
-                    url: '/api/platformArtist/' + id,
-                    processData:false,
-                    contentType:false,
-                    data: formdata,
-                    success: function(res) {
-                        layer.msg(res);
-                    }
-                });
-
             });
 
         })
@@ -105,6 +167,13 @@
         <div class="layui-btn-container">
             <a type="button" class="layui-btn layui-btn-primary layui-btn-sm" lay-event="delete">删除</a>
         </div>
+    </script>
+
+    <script type="text/html" id="dropdpwn-theads-tool">
+        <button class="layui-btn layui-btn-sm" id="platform-name-dropdown-btn">
+            <span>{{= d.platformName }}</span>
+            <i class="layui-icon layui-icon-down layui-font-12"></i>
+        </button>
     </script>
 </body>
 </html>
