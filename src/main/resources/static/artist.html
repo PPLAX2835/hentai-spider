@@ -86,6 +86,17 @@
                         area: ['80%','80%'],
                         content: '<iframe width="99%" height="90%" src="artist/detail.html?id=' + obj.data.id + '&name=' + obj.data.name + '"></iframe>'
                     });
+                } else if (obj.event === 'spider') {
+                    $.ajax({
+                        type: "GET",
+                        url: '/api/spider/artist/' + id,
+                        processData:false,
+                        contentType:false,
+                        success: function(res) {
+                            layer.msg(res);
+                        }
+                    });
+
                 }
             });
 
@@ -179,6 +190,7 @@
         <div class="layui-btn-container">
             <a type="button" class="layui-btn layui-btn-primary layui-btn-sm" lay-event="detail">查看所有平台作者信息</a>
             <a type="button" class="layui-btn layui-btn-primary layui-btn-sm" lay-event="delete">删除</a>
+            <a type="button" class="layui-btn layui-btn-primary layui-btn-sm" lay-event="spider">抓取该作者所有已知平台图片</a>
         </div>
     </script>
 

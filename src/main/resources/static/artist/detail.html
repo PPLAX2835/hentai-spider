@@ -32,7 +32,6 @@
         layui.use(function () {
             var table = layui.table;
             var dropdown = layui.dropdown;
-            var form = layui.form;
 
 
             $('#refresh-btn').on('click', function(){
@@ -103,6 +102,17 @@
                                 obj.del();
                                 layer.close(index);
                             });
+                        } else if (obj.event === 'spider') {
+                            $.ajax({
+                                type: "GET",
+                                url: '/api/spider/platformArtist/' + id,
+                                processData:false,
+                                contentType:false,
+                                success: function(res) {
+                                    layer.msg(res);
+                                }
+                            });
+
                         }
                     });
 
@@ -212,6 +222,7 @@
     <script type="text/html" id="platform-artist-table-theads-tool">
         <div class="layui-btn-container">
             <a type="button" class="layui-btn layui-btn-primary layui-btn-sm" lay-event="delete">删除</a>
+            <a type="button" class="layui-btn layui-btn-primary layui-btn-sm" lay-event="spider">抓取图片</a>
         </div>
     </script>
 
