@@ -42,6 +42,7 @@
                 height: 400, // 指定Table模板的高度
                 url: '/api/platformArtist/' + id, // 对应的数据接口，这边直接是请求的json文件
                 cellMinWidth: 120,
+                id: 'platformArtistReload',
                 cols: [[
                     // {checkbox: true, fixed: true},
                     {field:'platformArtistId', title: 'platformArtistId', width: 30, sort: true, fixed: true},
@@ -123,7 +124,7 @@
                             }
                             // dropdown 方式的下拉选择
                             dropdown.render({
-                                elem: '#platform-name-dropdown-btn',
+                                elem: '.platform-name-dropdown-btn',
                                 // trigger: 'hover',
                                 // 此处的 data 值，可根据 done 返回的 res 遍历来赋值
                                 data: newResData,
@@ -147,6 +148,7 @@
                                             that.elem.find('span').html(obj.title);
                                             // 更新数据中对应的字段
                                             rowData.platformName = obj.title;
+                                            table.reload('platformArtistReload', {})
                                             // 显示
                                             layer.msg(res);
                                         }
@@ -170,7 +172,7 @@
     </script>
 
     <script type="text/html" id="dropdpwn-theads-tool">
-        <button class="layui-btn layui-btn-sm" id="platform-name-dropdown-btn">
+        <button class="layui-btn layui-btn-sm platform-name-dropdown-btn">
             <span>{{= d.platformName }}</span>
             <i class="layui-icon layui-icon-down layui-font-12"></i>
         </button>
