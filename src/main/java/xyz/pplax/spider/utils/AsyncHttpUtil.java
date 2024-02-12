@@ -75,6 +75,21 @@ public class AsyncHttpUtil {
     }
 
     /**
+     * 进行get请求，返回Response
+     * @param url
+     * @return
+     */
+    public Response get(String url) {
+        try {
+            return asyncHttpClient.prepareGet(url).execute().get();
+        } catch (InterruptedException | ExecutionException e) {
+            logger.error(e.getMessage());
+            logger.warn("Now retrying");
+            return get(url);
+        }
+    }
+
+    /**
      * 发送get请求，携带headers
      * @param url
      * @param headers
@@ -92,6 +107,26 @@ public class AsyncHttpUtil {
             logger.error(e.getMessage());
             logger.warn("Now retrying");
             return sendGetRequest(url, headers);
+        }
+    }
+
+    /**
+     * 发送get请求，携带headers，返回response
+     * @param url
+     * @param headers
+     * @return
+     */
+    public Response get(String url, Map<String, String> headers){
+        org.asynchttpclient.BoundRequestBuilder requestBuilder = asyncHttpClient.prepareGet(url);
+        for (Map.Entry<String, String> entry : headers.entrySet()) {
+            requestBuilder.addHeader(entry.getKey(), entry.getValue());
+        }
+        try {
+            return requestBuilder.execute().get();
+        } catch (ExecutionException | InterruptedException e) {
+            logger.error(e.getMessage());
+            logger.warn("Now retrying");
+            return get(url, headers);
         }
     }
 
@@ -117,6 +152,28 @@ public class AsyncHttpUtil {
     }
 
     /**
+     * 发送post请求，带参数
+     * @param url
+     * @param params
+     * @return
+     */
+    public Response post(String url, Map<String, String> params){
+        org.asynchttpclient.BoundRequestBuilder requestBuilder = asyncHttpClient.preparePost(url);
+        for (Map.Entry<String, String> entry : params.entrySet()) {
+            requestBuilder.addFormParam(entry.getKey(), entry.getValue());
+        }
+        try {
+            Response response = requestBuilder.execute().get();
+            return response;
+        } catch (ExecutionException | InterruptedException e) {
+            logger.error(e.getMessage());
+            logger.warn("Now retrying");
+            return post(url, params);
+        }
+    }
+
+
+    /**
      * 发送post请求，带参数和headers
      * @param url
      * @param params
@@ -139,4 +196,30 @@ public class AsyncHttpUtil {
             return sendGetRequest(url, params);
         }
     }
+
+    /**
+     * 发送post请求，带参数和headers，返回response
+     * @param url
+     * @param params
+     * @return
+     */
+
+    public Response post(String url, Map<String, String> params, Map<String, String> headers) {
+        org.asynchttpclient.BoundRequestBuilder requestBuilder = asyncHttpClient.preparePost(url);
+        for (Map.Entry<String, String> entry : params.entrySet()) {
+            requestBuilder.addFormParam(entry.getKey(), entry.getValue());
+        }
+        for (Map.Entry<String, String> entry : headers.entrySet()) {
+            requestBuilder.addHeader(entry.getKey(), entry.getValue());
+        }
+        try {
+            Response response = requestBuilder.execute().get();
+            return response;
+        } catch (ExecutionException | InterruptedException e) {
+            logger.error(e.getMessage());
+            logger.warn("Now retrying");
+            return post(url, params);
+        }
+    }
+
 }
