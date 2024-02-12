@@ -26,11 +26,10 @@ public class SpiderController {
      * @return
      */
     @RequestMapping(value = "/platformArtist/{id}")
-    public String spiderByPlatformArtist(@PathVariable(value = "id") Long id) {
+    public void spiderByPlatformArtist(@PathVariable(value = "id") Long id) {
 
         spiderService.spiderByPlatformArtist(id);
 
-        return JSON.toJSONString(new ResponseResult(HttpStatus.SUCCESS.getCode(), "已交付给爬虫程序，可以在‘" + basePath + "’查看"));
     }
 
     /**
@@ -39,11 +38,10 @@ public class SpiderController {
      * @return
      */
     @RequestMapping(value = "/artist/{id}")
-    public String spiderByArtist(@PathVariable(value = "id") Long id) {
+    public void spiderByArtist(@PathVariable(value = "id") Long id) {
 
         spiderService.spiderByArtist(id);
 
-        return JSON.toJSONString(new ResponseResult(HttpStatus.SUCCESS.getCode(), "已交付给爬虫程序，可以在’" + basePath + "‘查看"));
     }
 
 }

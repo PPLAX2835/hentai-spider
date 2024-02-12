@@ -96,7 +96,7 @@ public class E621Spider {
         }
 
 
-        logger.info("数据抓取完成：" + JSON.toJSONString(fileList));
+        logger.info(String.format("数据抓取完成，总共%d个文件：", fileList.size()));
 
         return fileList;
     }

@@ -7,9 +7,12 @@ import xyz.pplax.spider.dao.PlatformArtistDao;
 import xyz.pplax.spider.dao.PlatformDao;
 import xyz.pplax.spider.model.constants.PlatformConstants;
 import xyz.pplax.spider.model.pojo.Artist;
+import xyz.pplax.spider.model.pojo.File;
 import xyz.pplax.spider.model.pojo.Platform;
 import xyz.pplax.spider.model.pojo.PlatformArtist;
 import xyz.pplax.spider.service.SpiderService;
+import xyz.pplax.spider.spiders.E621Spider;
+import xyz.pplax.spider.utils.AsyncHttpUtil;
 
 import java.util.List;
 
@@ -25,6 +28,11 @@ public class SpiderServiceImpl implements SpiderService {
     @Autowired
     private ArtistDao artistDao;
 
+    @Autowired
+    private E621Spider e621Spider;
+
+    @Autowired
+    private AsyncHttpUtil asyncHttpUtil;
 
     /**
      * platformArtist 对应的图片
@@ -38,9 +46,17 @@ public class SpiderServiceImpl implements SpiderService {
         PlatformArtist platformArtist = platformArtistDao.selectByPrimaryKey(id);
         Platform platform = platformDao.selectByPrimaryKey(platformArtist.getPlatformId());
 
+        // 获得作者
+        Artist artist = artistDao.selectByPrimaryKey(platformArtist.getArtistId());
+
         if (platform.getName().equals(PlatformConstants.E621)) {
             // 执行e621的爬虫
 
+            // 获得文件列表
+            List<File> fileList = e621Spider.getFileList(platformArtist, artist);
+
+            // 下载
+            asyncHttpUtil.downloadBatch(fileList);
         }
         if (platform.getName().equals(PlatformConstants.RULE34_PAHEAL)) {
             // 执行rule34_paheal的爬虫

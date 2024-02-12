@@ -105,12 +105,17 @@ public class AsyncHttpUtil {
     }
 
 
-    public void download(File file) throws IOException {
+    /**
+     * 下载
+     * @param file
+     * @throws IOException
+     */
+    public Boolean download(File file) throws IOException {
 
         // 判断文件是否已经下载过
         if (FileUtils.fileExists(basePath + file.getFilePath() + file.getFileName())) {
             logger.info("文件已经下载过了");
-            return;
+            return false;
         }
 
         // 获得响应
@@ -137,6 +142,31 @@ public class AsyncHttpUtil {
         outputChannel.close();
         fos.close();
 
+        return true;
+    }
+
+    /**
+     * 批量下载
+     * @param fileList
+     */
+    public void downloadBatch(List<File> fileList) {
+        List<CompletableFuture<Boolean>> futureList = new ArrayList<>();
+
+        for (File file : fileList) {
+            CompletableFuture<Boolean> booleanCompletableFuture = CompletableFuture.supplyAsync(() -> {
+                try {
+                    return download(file);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return false;
+            }, threadPoolTaskExecutor);
+
+            futureList.add(booleanCompletableFuture);
+        }
+
+        // 等待所有异步任务完成
+        CompletableFuture<Void> allOf = CompletableFuture.allOf(futureList.toArray(new CompletableFuture[0]));
     }
 
     /**

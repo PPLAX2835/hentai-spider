@@ -129,7 +129,7 @@ class SpiderDemoApplicationTests {
     }
 
     @Test
-    public void downloadBachTest() throws IOException {
+    public void downloadTest() throws IOException {
         File file = new File();
         file.setArtistId(9L);
         file.setPlatformId(1L);
@@ -142,6 +142,25 @@ class SpiderDemoApplicationTests {
 
 
         asyncHttpUtil.download(file);
+    }
+
+    @Test
+    public void downloadBatchTest() {
+
+        PlatformArtist platformArtist = new PlatformArtist();
+        platformArtist.setId(18L);
+        platformArtist.setArtistId(9L);
+        platformArtist.setPlatformId(1L);
+        platformArtist.setName("sollyz");
+        platformArtist.setHomepageUrl("https://e621.net/posts?tags=sollyz");
+
+        Artist artist = new Artist();
+        artist.setId(9L);
+        artist.setName("Sollyz");
+
+        List<File> fileList = e621Spider.getFileList(platformArtist, artist);
+
+        asyncHttpUtil.downloadBatch(fileList);
     }
 
 }
