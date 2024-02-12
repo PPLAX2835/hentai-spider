@@ -5,14 +5,19 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import xyz.pplax.spider.model.pojo.Artist;
+import xyz.pplax.spider.model.pojo.File;
 import xyz.pplax.spider.model.pojo.Platform;
 import xyz.pplax.spider.dao.*;
 //import xyz.pplax.spider.service.spider.FurAffinitySpiderService;
+import xyz.pplax.spider.model.pojo.PlatformArtist;
+import xyz.pplax.spider.spiders.E621Spider;
 import xyz.pplax.spider.spiders.FurAffinitySpider;
 import xyz.pplax.spider.utils.AsyncHttpUtil;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -87,6 +92,38 @@ class SpiderDemoApplicationTests {
         String s = asyncHttpUtil.sendGetRequest("https://e621.net");
 
         System.out.println(s);
+    }
+
+    @Autowired
+    private E621Spider e621Spider;
+    @Test
+    public void e621SpiderTest() {
+        PlatformArtist platformArtist = new PlatformArtist();
+        platformArtist.setHomepageUrl("https://e621.net/posts?tags=sollyz");
+
+        Artist artist = new Artist();
+        artist.setName("Sollyz");
+
+        List<File> fileList = e621Spider.getFileList(platformArtist, artist);
+        System.out.println(JSON.toJSONString(fileList));
+    }
+
+    @Test
+    public void batchReqTest() {
+        List<String> urls = new ArrayList<>();
+
+        urls.add("https://e621.net/posts?page=1&tags=sollyz");
+        urls.add("https://e621.net/posts?page=2&tags=sollyz");
+        urls.add("https://e621.net/posts?page=3&tags=sollyz");
+        urls.add("https://e621.net/posts?page=4&tags=sollyz");
+        urls.add("https://e621.net/posts?page=5&tags=sollyz");
+
+        CompletableFuture<List<String>> listCompletableFuture = asyncHttpUtil.sendGetRequestBatch(urls);
+
+        // 等待异步请求完成，并获取结果
+        List<String> resultList = listCompletableFuture.join();
+
+        System.out.println(resultList.size());
     }
 
 }
