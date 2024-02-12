@@ -4,24 +4,39 @@ import org.asynchttpclient.AsyncHttpClient;
 import org.asynchttpclient.AsyncHttpClientConfig;
 import org.asynchttpclient.DefaultAsyncHttpClient;
 import org.asynchttpclient.DefaultAsyncHttpClientConfig;
+import org.asynchttpclient.proxy.ProxyServer;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class AsyncHttpClientConfigurator {
 
+    @Value("${pplax.spider.proxy.host:127.0.0.1}")
+    private String host;
+
+    @Value("${pplax.spider.proxy.port:7890}")
+    private Integer port;
+
+    @Value("${pplax.spider.proxy.enable:false}")
+    private Boolean enableProxy;
+
     @Bean
-    public static AsyncHttpClient createAsyncHttpClient() {
-        AsyncHttpClientConfig config = new DefaultAsyncHttpClientConfig.Builder()
-                .setMaxConnections(100) // 设置最大连接数
-                .setMaxConnectionsPerHost(20) // 每个主机的最大连接数
-                .setConnectTimeout(5000) // 连接超时时间（毫秒）
-                .setRequestTimeout(5000) // 请求超时时间（毫秒）
-                .setReadTimeout(5000) // 读取超时时间（毫秒）
-                .setFollowRedirect(true) // 是否自动处理重定向
-                .build();
+    public AsyncHttpClient createAsyncHttpClient() {
+        DefaultAsyncHttpClientConfig.Builder configBuilder = new DefaultAsyncHttpClientConfig.Builder()
+                .setMaxConnections(100)
+                .setMaxConnectionsPerHost(20)
+                .setConnectTimeout(5000)
+                .setRequestTimeout(5000)
+                .setReadTimeout(5000)
+                .setFollowRedirect(true);
+
+        if (enableProxy) {
+            configBuilder.setProxyServer(new ProxyServer.Builder(host, port).build());
+        }
+
+        AsyncHttpClientConfig config = configBuilder.build();
 
         return new DefaultAsyncHttpClient(config);
     }
 }
-

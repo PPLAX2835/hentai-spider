@@ -80,4 +80,13 @@ class SpiderDemoApplicationTests {
         }
     }
 
+    @Autowired
+    private AsyncHttpUtil asyncHttpUtil;
+    @Test
+    public void e621Test() {
+        String s = asyncHttpUtil.sendGetRequest("https://e621.net");
+
+        System.out.println(s);
+    }
+
 }
