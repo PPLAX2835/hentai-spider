@@ -31,11 +31,6 @@ public class File implements Serializable {
     private String idInPlatform;
 
     /**
-     * 该文件的散列值
-     */
-    private String hash;
-
-    /**
      * 文件url
      */
     private String fileUrl;
@@ -54,11 +49,6 @@ public class File implements Serializable {
      * 文件的存储地址
      */
     private String filePath;
-
-    /**
-     * 文件大小
-     */
-    private Integer fileSize;
 
     /**
      * 文件的主页

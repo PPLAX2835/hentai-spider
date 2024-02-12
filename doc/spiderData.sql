@@ -52,18 +52,14 @@ CREATE TABLE `file` (
   `artist_id` bigint NOT NULL COMMENT '作者id',
   `platform_id` int NOT NULL COMMENT '平台id',
   `id_in_platform` varchar(255) NOT NULL COMMENT '在该平台的id',
-  `hash` varchar(300) DEFAULT NULL COMMENT '该文件的散列值',
   `file_url` varchar(300) DEFAULT NULL COMMENT '文件url',
   `file_type` varchar(30) DEFAULT NULL COMMENT '文件类型',
   `file_name` varchar(100) DEFAULT NULL COMMENT '文件名',
   `file_path` varchar(300) DEFAULT NULL COMMENT '文件的存储地址',
-  `file_size` int DEFAULT NULL COMMENT '文件大小',
   `page_url` varchar(300) DEFAULT NULL COMMENT '文件的主页',
   `update_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   `insert_at` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '添加时间',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `id_in_platform` (`id_in_platform`),
-  UNIQUE KEY `hash` (`hash`)
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3 COMMENT='文件表，记录文件信息';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
