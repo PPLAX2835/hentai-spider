@@ -37,7 +37,6 @@ CREATE TABLE `artist` (
 
 LOCK TABLES `artist` WRITE;
 /*!40000 ALTER TABLE `artist` DISABLE KEYS */;
-INSERT INTO `artist` (`id`, `name`, `update_at`, `insert_at`) VALUES (1,'Sollyz Sundyz','2024-02-10 13:11:32','2024-02-10 13:11:32'),(2,'Sadness_hao','2024-02-10 17:12:43','2024-02-10 13:11:32'),(3,'熊八','2024-02-10 18:03:38','2024-02-10 13:11:32');
 /*!40000 ALTER TABLE `artist` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -91,7 +90,7 @@ CREATE TABLE `platform` (
   `update_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   `insert_at` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '添加时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3 COMMENT='平台表';
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb3 COMMENT='平台表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -100,7 +99,7 @@ CREATE TABLE `platform` (
 
 LOCK TABLES `platform` WRITE;
 /*!40000 ALTER TABLE `platform` DISABLE KEYS */;
-INSERT INTO `platform` (`id`, `name`, `url`, `update_at`, `insert_at`) VALUES (1,'e621','https://e621.net','2024-02-10 13:12:03','2024-02-10 13:12:03'),(2,'rule34','https://rule34.paheal.net/','2024-02-11 20:37:30','2024-02-11 20:37:30');
+INSERT INTO `platform` (`id`, `name`, `url`, `update_at`, `insert_at`) VALUES (1,'e621','https://e621.net','2024-02-10 13:12:03','2024-02-10 13:12:03'),(2,'rule34_paheal','https://rule34.paheal.net/','2024-02-12 11:24:37','2024-02-11 20:37:30'),(3,'rule34_us','https://rule34.us/','2024-02-12 11:27:57','2024-02-12 11:25:00'),(4,'pixiv','https://www.pixiv.net/','2024-02-12 11:27:57','2024-02-12 11:27:02');
 /*!40000 ALTER TABLE `platform` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -129,7 +128,6 @@ CREATE TABLE `platform_artist` (
 
 LOCK TABLES `platform_artist` WRITE;
 /*!40000 ALTER TABLE `platform_artist` DISABLE KEYS */;
-INSERT INTO `platform_artist` (`id`, `artist_id`, `platform_id`, `name`, `homepage_url`, `update_at`, `insert_at`) VALUES (1,1,1,'sollyz','https://e621.net/posts?tags=sollyz','2024-02-11 21:31:23','2024-02-10 13:12:30');
 /*!40000 ALTER TABLE `platform_artist` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -142,4 +140,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-02-11 21:51:08
+-- Dump completed on 2024-02-12 11:28:17

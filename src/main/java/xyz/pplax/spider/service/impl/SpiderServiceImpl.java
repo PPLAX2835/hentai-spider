@@ -42,8 +42,12 @@ public class SpiderServiceImpl implements SpiderService {
             // 执行e621的爬虫
 
         }
-        if (platform.getName().equals(PlatformConstants.RULE34)) {
-            // 执行rule34的爬虫
+        if (platform.getName().equals(PlatformConstants.RULE34_PAHEAL)) {
+            // 执行rule34_paheal的爬虫
+
+        }
+        if (platform.getName().equals(PlatformConstants.RULE34_US)) {
+            // 执行rule34_us的爬虫
 
         }
         if (platform.getName().equals(PlatformConstants.PIXIV)) {
