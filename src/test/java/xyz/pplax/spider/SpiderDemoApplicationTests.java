@@ -14,6 +14,8 @@ import xyz.pplax.spider.spiders.E621Spider;
 import xyz.pplax.spider.spiders.FurAffinitySpider;
 import xyz.pplax.spider.utils.AsyncHttpUtil;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -124,6 +126,22 @@ class SpiderDemoApplicationTests {
         List<String> resultList = listCompletableFuture.join();
 
         System.out.println(resultList.size());
+    }
+
+    @Test
+    public void downloadBachTest() throws IOException {
+        File file = new File();
+        file.setArtistId(9L);
+        file.setPlatformId(1L);
+        file.setFileName("e621-761bb4b9631ba12548cfe65532d60b0f.png");
+        file.setFilePath("/Sollyz/");
+        file.setFileType("png");
+        file.setFileUrl("https://static1.e621.net/data/76/1b/761bb4b9631ba12548cfe65532d60b0f.png");
+        file.setIdInPlatform("331239");
+        file.setPageUrl("https://e621.net/posts/331239");
+
+
+        asyncHttpUtil.download(file);
     }
 
 }

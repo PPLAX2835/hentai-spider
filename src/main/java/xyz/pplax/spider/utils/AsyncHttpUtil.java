@@ -5,9 +5,18 @@ import org.asynchttpclient.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import xyz.pplax.spider.dao.FileDao;
+import xyz.pplax.spider.model.pojo.File;
 import xyz.pplax.spider.spiders.FurAffinitySpider;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.channels.Channels;
+import java.nio.channels.FileChannel;
+import java.nio.channels.ReadableByteChannel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +33,12 @@ public class AsyncHttpUtil {
 
     @Autowired
     private Executor threadPoolTaskExecutor;
+
+    @Autowired
+    private FileDao fileDao;
+
+    @Value("${pplax.spider.basepath}")
+    private String basePath;
 
     private final static Logger logger = LoggerFactory.getLogger(AsyncHttpUtil.class);
 
@@ -56,6 +71,72 @@ public class AsyncHttpUtil {
                         .map(CompletableFuture::join) // 获取各异步任务的结果
                         .collect(Collectors.toList()) // 将结果收集为List
         );
+    }
+
+    /**
+     * 对url列表进行批量请求
+     * @param urlList
+     * @return
+     */
+    public CompletableFuture<List<Response>> getBatch(List<String> urlList) {
+        List<CompletableFuture<Response>> futures = new ArrayList<>();
+
+        for (String url : urlList) {
+
+            logger.info(String.format("正在获取：%s的页面内容", url));
+
+            // 提交任务
+            CompletableFuture<Response> future = CompletableFuture.supplyAsync(() -> {
+                return get(url);
+            }, threadPoolTaskExecutor);
+            futures.add(future);
+
+        }
+
+        // 等待所有异步任务完成
+        CompletableFuture<Void> allOf = CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]));
+
+        // 当所有异步任务完成后，将它们的结果合并成一个List<String>并返回
+        return allOf.thenApply(v ->
+                futures.stream()
+                        .map(CompletableFuture::join) // 获取各异步任务的结果
+                        .collect(Collectors.toList()) // 将结果收集为List
+        );
+    }
+
+
+    public void download(File file) throws IOException {
+
+        // 判断文件是否已经下载过
+        if (FileUtils.fileExists(basePath + file.getFilePath() + file.getFileName())) {
+            logger.info("文件已经下载过了");
+            return;
+        }
+
+        // 获得响应
+        Response response = get(file.getFileUrl());
+
+        // 从响应中获取输入流
+        ReadableByteChannel inputChannel = Channels.newChannel(response.getResponseBodyAsStream());
+
+        // 创建目录
+        FileUtils.createDirectory(basePath + file.getFilePath());
+
+        // 创建本地文件输出流
+        FileOutputStream fos = new FileOutputStream(basePath + file.getFilePath() + file.getFileName());
+        FileChannel outputChannel = fos.getChannel();
+
+        // 将输入流的内容写入本地文件
+        outputChannel.transferFrom(inputChannel, 0, Long.MAX_VALUE);
+
+        // 持久化到数据库
+        fileDao.insert(file);
+
+        // 关闭资源
+        inputChannel.close();
+        outputChannel.close();
+        fos.close();
+
     }
 
     /**
