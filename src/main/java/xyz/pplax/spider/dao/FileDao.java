@@ -16,6 +16,14 @@ public interface FileDao {
 
     File selectByPrimaryKey(Long id);
 
+    /**
+     * 通过平台id和在这个平台的id查询
+     * @param platformId
+     * @param idInPlatform
+     * @return
+     */
+    File selectByPlatformIdAndIdInPlatform(@Param("platformId") Long platformId, @Param("idInPlatform") String idInPlatform);
+
     List<File> selectPageByArtistId(@Param("limit") Integer limit, @Param("offset") Integer offset, @Param("id") Long id);
 
     List<File> selectPageByPlatformId(@Param("limit") Integer limit, @Param("offset") Integer offset, @Param("id") Long id);

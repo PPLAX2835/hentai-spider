@@ -1,5 +1,6 @@
 package xyz.pplax.spider.service.impl;
 
+import com.alibaba.fastjson2.JSON;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import xyz.pplax.spider.dao.ArtistDao;
@@ -13,6 +14,7 @@ import xyz.pplax.spider.model.pojo.PlatformArtist;
 import xyz.pplax.spider.service.SpiderService;
 import xyz.pplax.spider.spiders.E621Spider;
 import xyz.pplax.spider.spiders.Rule34PahealSpider;
+import xyz.pplax.spider.spiders.Rule34UsSpider;
 import xyz.pplax.spider.utils.AsyncHttpUtil;
 
 import java.util.List;
@@ -34,6 +36,9 @@ public class SpiderServiceImpl implements SpiderService {
 
     @Autowired
     private Rule34PahealSpider rule34PahealSpider;
+
+    @Autowired
+    private Rule34UsSpider rule34UsSpider;
 
     @Autowired
     private AsyncHttpUtil asyncHttpUtil;
@@ -61,6 +66,9 @@ public class SpiderServiceImpl implements SpiderService {
 
             // 获得文件列表
             fileList = e621Spider.getFileList(platformArtist, artist);
+
+            // 下载
+            asyncHttpUtil.downloadBatch(fileList);
         }
         if (platform.getName().equals(PlatformConstants.RULE34_PAHEAL)) {
             // 执行rule34_paheal的爬虫
@@ -68,18 +76,23 @@ public class SpiderServiceImpl implements SpiderService {
             // 获得文件列表
             fileList = rule34PahealSpider.getFileList(platformArtist, artist);
 
+            // 下载
+            asyncHttpUtil.downloadBatch(fileList);
         }
         if (platform.getName().equals(PlatformConstants.RULE34_US)) {
             // 执行rule34_us的爬虫
 
+            // 获得文件列表
+            fileList = rule34UsSpider.getFileList(platformArtist, artist);
+
+            // 下载
+            asyncHttpUtil.downloadBatch(fileList);
         }
         if (platform.getName().equals(PlatformConstants.PIXIV)) {
             // 执行pixiv的爬虫
 
         }
 
-        // 下载
-        asyncHttpUtil.downloadBatch(fileList);
     }
 
     /**

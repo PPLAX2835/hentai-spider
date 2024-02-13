@@ -24,6 +24,13 @@
     from file
     where id = #{id,jdbcType=BIGINT}
   </select>
+  <select id="selectByPlatformIdAndIdInPlatform" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from file
+    where platform_id = #{platformId,jdbcType=BIGINT}
+    and id_in_platform = #{idInPlatform,jdbcType=VARCHAR}
+  </select>
   <select id="selectPageByArtistId" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />

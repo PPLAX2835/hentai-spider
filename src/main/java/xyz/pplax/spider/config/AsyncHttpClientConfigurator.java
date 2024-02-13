@@ -24,7 +24,7 @@ public class AsyncHttpClientConfigurator {
     @Bean
     public AsyncHttpClient createAsyncHttpClient() {
         DefaultAsyncHttpClientConfig.Builder configBuilder = new DefaultAsyncHttpClientConfig.Builder()
-                .setMaxConnections(20)
+                .setMaxConnections(30)                  // 最大连接数，这个要大于等于最大线程数，要不然有些连接会被拒绝
                 .setMaxConnectionsPerHost(20)
                 .setConnectTimeout(5000)
                 .setRequestTimeout(5000)
