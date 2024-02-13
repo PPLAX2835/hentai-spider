@@ -134,7 +134,7 @@ public class Rule34UsSpider {
                 // 获得文件路径、类型和文件名
                 file.setFileUrl(src);
                 file.setFileType(src.substring(src.lastIndexOf(".") + 1));
-                file.setFileName(file.getFileName() + "." + file.getFileType());
+                file.setFileName("Rule34Us-" + file.getIdInPlatform() + "-" + file.getFileName() + "." + file.getFileType());
 
                 return file;
             }, threadPoolTaskExecutor);

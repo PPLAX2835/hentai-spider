@@ -96,7 +96,7 @@ public class Rule34PahealSpider {
                 file.setIdInPlatform(idInPlatform);
                 file.setFileUrl(href);
                 file.setFileType(type);
-                file.setFileName(href.substring(href.lastIndexOf("/") + 1) + "." + type);
+                file.setFileName("Rule34Paheal-" + idInPlatform + "-" + href.substring(href.lastIndexOf("/") + 1) + "." + type);
                 file.setFilePath("/" + artist.getName() + "/");
                 file.setPageUrl("https://rule34.paheal.net/post/view/" + idInPlatform);
 

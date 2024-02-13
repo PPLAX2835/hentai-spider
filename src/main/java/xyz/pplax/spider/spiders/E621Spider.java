@@ -84,7 +84,7 @@ public class E621Spider {
                 file.setIdInPlatform(matcher.group(1));
                 file.setFileUrl(matcher.group(2));
                 file.setFileType(FileUtils.getFileExtension(matcher.group(2)));
-                file.setFileName(matcher.group(2).substring(matcher.group(2).lastIndexOf("/") + 1));
+                file.setFileName("e621-" + matcher.group(1) + "-" + matcher.group(2).substring(matcher.group(2).lastIndexOf("/") + 1));
                 file.setFilePath("/" + artist.getName() + "/");
                 file.setPageUrl("https://e621.net/posts/" + matcher.group(1));
 

@@ -1,5 +1,6 @@
 package xyz.pplax.spider.utils;
 
+import com.alibaba.fastjson2.JSON;
 import org.asynchttpclient.AsyncHttpClient;
 import org.asynchttpclient.Response;
 import org.slf4j.Logger;
@@ -114,7 +115,8 @@ public class AsyncHttpUtil {
 
         // 判断文件是否已经下载过
         if (FileUtils.fileExists(basePath + file.getFilePath() + file.getFileName())) {
-            logger.info("文件已经下载过了");
+            logger.warn("文件已经下载过了");
+            logger.info("文件信息：" + JSON.toJSONString(file));
             return false;
         }
 

@@ -19,6 +19,12 @@
 -- Table structure for table `artist`
 --
 
+drop database if exists spiderData;
+
+create database if not exists spiderData;
+
+use spiderData;
+
 DROP TABLE IF EXISTS `artist`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
