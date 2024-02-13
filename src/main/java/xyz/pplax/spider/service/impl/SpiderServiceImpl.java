@@ -12,6 +12,7 @@ import xyz.pplax.spider.model.pojo.Platform;
 import xyz.pplax.spider.model.pojo.PlatformArtist;
 import xyz.pplax.spider.service.SpiderService;
 import xyz.pplax.spider.spiders.E621Spider;
+import xyz.pplax.spider.spiders.Rule34PahealSpider;
 import xyz.pplax.spider.utils.AsyncHttpUtil;
 
 import java.util.List;
@@ -32,6 +33,9 @@ public class SpiderServiceImpl implements SpiderService {
     private E621Spider e621Spider;
 
     @Autowired
+    private Rule34PahealSpider rule34PahealSpider;
+
+    @Autowired
     private AsyncHttpUtil asyncHttpUtil;
 
     /**
@@ -49,17 +53,20 @@ public class SpiderServiceImpl implements SpiderService {
         // 获得作者
         Artist artist = artistDao.selectByPrimaryKey(platformArtist.getArtistId());
 
+        // 文件列表
+        List<File> fileList = null;
+
         if (platform.getName().equals(PlatformConstants.E621)) {
             // 执行e621的爬虫
 
             // 获得文件列表
-            List<File> fileList = e621Spider.getFileList(platformArtist, artist);
-
-            // 下载
-            asyncHttpUtil.downloadBatch(fileList);
+            fileList = e621Spider.getFileList(platformArtist, artist);
         }
         if (platform.getName().equals(PlatformConstants.RULE34_PAHEAL)) {
             // 执行rule34_paheal的爬虫
+
+            // 获得文件列表
+            fileList = rule34PahealSpider.getFileList(platformArtist, artist);
 
         }
         if (platform.getName().equals(PlatformConstants.RULE34_US)) {
@@ -70,6 +77,9 @@ public class SpiderServiceImpl implements SpiderService {
             // 执行pixiv的爬虫
 
         }
+
+        // 下载
+        asyncHttpUtil.downloadBatch(fileList);
     }
 
     /**

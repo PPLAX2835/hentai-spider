@@ -89,6 +89,13 @@
             <version>4.1.66.Final</version>
         </dependency>
 
+        <!-- jsoup -->
+        <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <version>1.15.1</version>
+        </dependency>
+
         <!-- SLF4J (optional, for logging) -->
         <dependency>
             <groupId>org.slf4j</groupId>
