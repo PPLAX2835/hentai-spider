@@ -132,9 +132,6 @@ public class PixivSpider {
                 file.setArtistId(platformArtist.getArtistId());
                 file.setPlatformId(platformArtist.getPlatformId());
                 file.setIdInPlatform((String) workMap.get("id"));
-//                file.setFileUrl(fileUrl);
-//                file.setFileType(fileUrl.substring(fileUrl.lastIndexOf(".") + 1));
-//                file.setFileName(fileUrl.substring(fileUrl.lastIndexOf("/") + 1));
                 file.setFilePath("/" + artist.getName() + "/");
                 file.setPageUrl("https://www.pixiv.net/artworks/" + workMap.get("id"));
 
@@ -156,12 +153,9 @@ public class PixivSpider {
             // 提交任务
             CompletableFuture<File> fileCompletableFuture = CompletableFuture.supplyAsync(() -> {
                 // 获得响应
-                logger.info("正在获取详情页为：" + file.getPageUrl() + "的文件地址");
+                logger.info("正在获取地址为：" + "https://www.pixiv.net/ajax/illust/" + file.getIdInPlatform() + "的文件地址");
 
                 String respJsonString = asyncHttpUtil.sendGetRequest("https://www.pixiv.net/ajax/illust/" + file.getIdInPlatform(), headers);
-
-                logger.info("文件信息请求结果：" + respJsonString);
-                logger.info("请求地址：" + "https://www.pixiv.net/ajax/illust/" + file.getIdInPlatform());
 
                 // 获得文件地址
                 ObjectMapper objectMapper = new ObjectMapper();
@@ -180,6 +174,10 @@ public class PixivSpider {
                 } catch (JsonProcessingException e) {
                     logger.error(e.getMessage());
                     logger.error("responseStr：" + respJsonString);
+                } catch (ClassCastException e) {
+                    logger.error(e.getMessage());
+                    logger.error("responseStr：" + respJsonString);
+                    logger.error("headers：" + JSON.toJSONString(headers));
                 }
 
                 return file;

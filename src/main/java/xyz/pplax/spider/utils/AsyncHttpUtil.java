@@ -206,7 +206,10 @@ public class AsyncHttpUtil {
         outputChannel.transferFrom(inputChannel, 0, Long.MAX_VALUE);
 
         // 持久化到数据库
-        fileDao.insert(file);
+        File existFile = fileDao.selectByPlatformIdAndIdInPlatform(file.getPlatformId(), file.getIdInPlatform());
+        if (existFile == null) {
+            fileDao.insert(file);
+        }
 
         // 关闭资源
         inputChannel.close();
@@ -249,7 +252,10 @@ public class AsyncHttpUtil {
         outputChannel.transferFrom(inputChannel, 0, Long.MAX_VALUE);
 
         // 持久化到数据库
-        fileDao.insert(file);
+        File existFile = fileDao.selectByPlatformIdAndIdInPlatform(file.getPlatformId(), file.getIdInPlatform());
+        if (existFile == null) {
+            fileDao.insert(file);
+        }
 
         // 关闭资源
         inputChannel.close();
