@@ -48,7 +48,7 @@ public class AsyncHttpUtil {
      * @param urlList
      * @return
      */
-    public CompletableFuture<List<String>> sendGetRequestBatch(List<String> urlList) {
+    public List<String> sendGetRequestBatch(List<String> urlList) {
         List<CompletableFuture<String>> futures = new ArrayList<>();
 
         for (String url : urlList) {
@@ -67,11 +67,13 @@ public class AsyncHttpUtil {
         CompletableFuture<Void> allOf = CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]));
 
         // 当所有异步任务完成后，将它们的结果合并成一个List<String>并返回
-        return allOf.thenApply(v ->
+        CompletableFuture<List<String>> listCompletableFuture = allOf.thenApply(v ->
                 futures.stream()
                         .map(CompletableFuture::join) // 获取各异步任务的结果
                         .collect(Collectors.toList()) // 将结果收集为List
         );
+
+        return listCompletableFuture.join();
     }
 
     /**
@@ -79,7 +81,7 @@ public class AsyncHttpUtil {
      * @param urlList
      * @return
      */
-    public CompletableFuture<List<Response>> getBatch(List<String> urlList) {
+    public List<Response> getBatch(List<String> urlList) {
         List<CompletableFuture<Response>> futures = new ArrayList<>();
 
         for (String url : urlList) {
@@ -98,11 +100,13 @@ public class AsyncHttpUtil {
         CompletableFuture<Void> allOf = CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]));
 
         // 当所有异步任务完成后，将它们的结果合并成一个List<String>并返回
-        return allOf.thenApply(v ->
+        CompletableFuture<List<Response>> listCompletableFuture = allOf.thenApply(v ->
                 futures.stream()
                         .map(CompletableFuture::join) // 获取各异步任务的结果
                         .collect(Collectors.toList()) // 将结果收集为List
         );
+
+        return listCompletableFuture.join();
     }
 
 

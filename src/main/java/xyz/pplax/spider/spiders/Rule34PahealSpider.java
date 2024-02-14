@@ -70,12 +70,9 @@ public class Rule34PahealSpider {
         for (int i = 2; i <= maxPage; i++) {
             urlList.add(homePageUrl + "/" + i);
         }
-        // 批量进行请求
-        CompletableFuture<List<String>> listCompletableFuture = asyncHttpUtil.sendGetRequestBatch(urlList);
 
-        // 等待异步请求完成，并获取结果
-        List<String> respList = listCompletableFuture.join();
-
+        // 批量进行请求，等待异步请求完成，并获取结果
+        List<String> respList = asyncHttpUtil.sendGetRequestBatch(urlList);
         for (String resp : respList) {
 
             Document doc = Jsoup.parseBodyFragment(resp);

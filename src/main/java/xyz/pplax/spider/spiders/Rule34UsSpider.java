@@ -62,8 +62,7 @@ public class Rule34UsSpider {
         for (int i = 1; i < maxPage; i++) {
             urlList.add(platformArtist.getHomepageUrl() + "&page=" + i);
         }
-        CompletableFuture<List<String>> responseListFuture = asyncHttpUtil.sendGetRequestBatch(urlList);
-        List<String> responseStringList = responseListFuture.join();
+        List<String> responseStringList = asyncHttpUtil.sendGetRequestBatch(urlList);
         responseStringList.add(responseString);
 
 
