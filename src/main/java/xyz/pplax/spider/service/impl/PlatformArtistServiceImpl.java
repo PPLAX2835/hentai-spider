@@ -34,11 +34,11 @@ public class PlatformArtistServiceImpl implements PlatformArtistService {
 
     @Override
     public List<PlatformArtistVO> getVoListByArtistId(Long id) {
-        List<PlatformArtist> platformArtistVOList = getListByArtistId(id);
+        List<PlatformArtist> platformArtistList = getListByArtistId(id);
 
-        List<PlatformArtistVO> res = new ArrayList<>();
+        List<PlatformArtistVO> platformArtistVoList = new ArrayList<>();
 
-        for (PlatformArtist platformArtist : platformArtistVOList) {
+        for (PlatformArtist platformArtist : platformArtistList) {
             // 封装
             PlatformArtistVO platformArtistVO = new PlatformArtistVO();
             platformArtistVO.setPlatformArtistName(platformArtist.getName());
@@ -48,11 +48,12 @@ public class PlatformArtistServiceImpl implements PlatformArtistService {
             platformArtistVO.setArtistId(platformArtist.getArtistId());
             platformArtistVO.setPlatformArtistId(platformArtist.getId());
             platformArtistVO.setPlatformId(platformArtist.getPlatformId());
+            platformArtistVO.setIdInPlatform(platformArtist.getIdInPlatform());
 
-            res.add(platformArtistVO);
+            platformArtistVoList.add(platformArtistVO);
         }
 
-        return res;
+        return platformArtistVoList;
     }
 
     @Override

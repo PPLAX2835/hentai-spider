@@ -59,12 +59,16 @@ public class PlatformArtistController {
     @PutMapping(value = "/{id}")
     public String update(
             @PathVariable("id") Long id,
+            @RequestParam(name = "idInPlatform", required = false) String idInPlatform,
             @RequestParam(name = "platformArtistName", required = false) String platformArtistName,
             @RequestParam(name = "homepageUdl", required = false) String homepageUdl,
             @RequestParam(name = "platformId", required = false) Long platformId) {
 
         PlatformArtist platformArtist = new PlatformArtist();
         platformArtist.setId(id);
+        if (idInPlatform != null) {
+            platformArtist.setIdInPlatform(idInPlatform);
+        }
         if (platformArtistName != null && !"".equals(platformArtistName)) {
             platformArtist.setName(platformArtistName);
         }

@@ -116,6 +116,7 @@ CREATE TABLE `platform_artist` (
   `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
   `artist_id` bigint NOT NULL COMMENT '作者id',
   `platform_id` bigint NOT NULL COMMENT '平台id',
+  `id_in_platform` varchar(255) not null DEFAULT '' COMMENT '作者在该平台的id',
   `name` varchar(255) NOT NULL COMMENT '作者昵称',
   `homepage_url` varchar(300) DEFAULT NULL COMMENT '主页url',
   `update_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',

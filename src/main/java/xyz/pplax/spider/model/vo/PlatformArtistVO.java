@@ -21,6 +21,11 @@ public class PlatformArtistVO {
     private Long platformId;
 
     /**
+     * 作者在该平台的id
+     */
+    private String idInPlatform;
+
+    /**
      * 平台名称
      */
     private String platformName;

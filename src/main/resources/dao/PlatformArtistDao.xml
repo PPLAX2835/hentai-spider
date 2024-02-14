@@ -5,13 +5,14 @@
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="artist_id" jdbcType="BIGINT" property="artistId" />
     <result column="platform_id" jdbcType="BIGINT" property="platformId" />
+    <result column="id_in_platform" jdbcType="BIGINT" property="idInPlatform" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="homepage_url" jdbcType="VARCHAR" property="homepageUrl" />
     <result column="update_at" jdbcType="TIMESTAMP" property="updateAt" />
     <result column="insert_at" jdbcType="TIMESTAMP" property="insertAt" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, artist_id, platform_id, `name`, homepage_url, update_at, insert_at
+    id, artist_id, platform_id, id_in_platform, `name`, homepage_url, update_at, insert_at
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -36,10 +37,10 @@
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="xyz.pplax.spider.model.pojo.PlatformArtist" useGeneratedKeys="true">
-    insert into platform_artist (artist_id, platform_id, `name`, 
+    insert into platform_artist (artist_id, platform_id, id_in_platform, `name`,
       homepage_url, update_at, insert_at
       )
-    values (#{artistId,jdbcType=BIGINT}, #{platformId,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, 
+    values (#{artistId,jdbcType=BIGINT}, #{platformId,jdbcType=BIGINT}, #{idInPlatform,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR},
       #{homepageUrl,jdbcType=VARCHAR}, #{updateAt,jdbcType=TIMESTAMP}, #{insertAt,jdbcType=TIMESTAMP}
       )
   </insert>
@@ -51,6 +52,9 @@
       </if>
       <if test="platformId != null">
         platform_id,
+      </if>
+      <if test="idInPlatform != null">
+        id_in_platform,
       </if>
       <if test="name != null">
         `name`,
@@ -71,6 +75,9 @@
       </if>
       <if test="platformId != null">
         #{platformId,jdbcType=BIGINT},
+      </if>
+      <if test="idInPlatform != null">
+        #{idInPlatform,jdbcType=VARCHAR},
       </if>
       <if test="name != null">
         #{name,jdbcType=VARCHAR},
@@ -95,6 +102,9 @@
       <if test="platformId != null">
         platform_id = #{platformId,jdbcType=BIGINT},
       </if>
+      <if test="idInPlatform != null">
+        id_in_platform = #{idInPlatform,jdbcType=VARCHAR},
+      </if>
       <if test="name != null">
         `name` = #{name,jdbcType=VARCHAR},
       </if>
@@ -114,6 +124,7 @@
     update platform_artist
     set artist_id = #{artistId,jdbcType=BIGINT},
       platform_id = #{platformId,jdbcType=BIGINT},
+      id_in_platform = #{idInPlatform,jdbcType=VARCHAR},
       `name` = #{name,jdbcType=VARCHAR},
       homepage_url = #{homepageUrl,jdbcType=VARCHAR},
       update_at = #{updateAt,jdbcType=TIMESTAMP},

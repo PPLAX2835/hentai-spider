@@ -46,6 +46,7 @@
                     "artistId": '',
                     "homepageUrl": '',
                     "platformArtistId": '',
+                    "idInPlatform": '',
                     "platformArtistName": '',
                     "platformId": '',
                     "platformName": '',
@@ -68,7 +69,7 @@
                     // {checkbox: true, fixed: true},
                     {field:'platformArtistId', title: 'platformArtistId', width: 30, sort: true, fixed: true},
                     {field:'platformArtistName', edit:'text', title: '该平台昵称', minWidth: 50, sort: true, fixed: true},
-                    // {field:'platformName', title: '平台名', minWidth: 80, sort: true, fixed: true},
+                    {field:'idInPlatform', edit:'text', title: '作者在该平台的id', minWidth: 50, sort: true, fixed: true},
                     {field:'homepageUrl', edit:'text', title: '该平台主页', minWidth: 80, sort: true, fixed: true},
                     {field:'platformUrl', title: '平台地址', minWidth: 80, sort: true, fixed: true},
                     {field: 'platformName', title: '平台', width:115, unresize: true, align: 'center', templet: '#dropdpwn-theads-tool'},
@@ -121,12 +122,14 @@
                         let id = obj.data.platformArtistId;
                         let newPlatformArtistName = obj.data.platformArtistName;
                         let newHomepageUrl = obj.data.homepageUrl;
+                        let newIdInPlatform = obj.data.idInPlatform;
 
                         var formdata = new FormData();
 
                         formdata.append("artistId", getUrlParams(window.location.href).id);
                         formdata.append("platformArtistName", newPlatformArtistName);
                         formdata.append("homepageUdl", newHomepageUrl);
+                        formdata.append("idInPlatform", newIdInPlatform);
 
 
                         if (id === '') {

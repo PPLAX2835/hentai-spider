@@ -21,6 +21,11 @@ public class PlatformArtist implements Serializable {
     private Long artistId;
 
     /**
+     * 作者在该平台的id
+     */
+    private String idInPlatform;
+
+    /**
      * 平台id
      */
     private Long platformId;
