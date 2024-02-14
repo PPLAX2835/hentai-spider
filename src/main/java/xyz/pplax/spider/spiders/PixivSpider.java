@@ -1,7 +1,12 @@
 package xyz.pplax.spider.spiders;
 
+import com.alibaba.fastjson2.JSON;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +20,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Component
 public class PixivSpider {
@@ -22,6 +32,9 @@ public class PixivSpider {
 
     @Autowired
     private AsyncHttpUtil asyncHttpUtil;
+
+    @Autowired
+    private Executor threadPoolTaskExecutor;
 
     private final static Logger logger = LoggerFactory.getLogger(PixivSpider.class);
 
@@ -68,10 +81,86 @@ public class PixivSpider {
         }
 
         // 通过这些地址请求获得响应结果
-        String s = asyncHttpUtil.sendGetRequest(workDetailGetUrls.get(1));
-        System.out.println(s);
+        List<String> worksRespJsonList = asyncHttpUtil.sendGetRequestBatch(workDetailGetUrls);
+        // 处理
+        for (String woksRespJson : worksRespJsonList){
+            ObjectMapper worksRespJsonObjectMapper = new ObjectMapper();
+            Map worksRespJsonObjectMapperMap = worksRespJsonObjectMapper.readValue(woksRespJson, Map.class);
+            Map worksRespJsonBody = (Map) worksRespJsonObjectMapperMap.get("body");
+            Map works = (Map) worksRespJsonBody.get("works");
 
-        return fileList;
+            System.out.println(JSON.toJSONString(works));
+
+            Set<String> set = works.keySet();
+            for (String key : set) {
+                Map workMap = (Map) works.get(key);
+                String fileUrl = (String) workMap.get("url");
+                // 封装file
+                File file = new File();
+                file.setArtistId(platformArtist.getArtistId());
+                file.setPlatformId(platformArtist.getPlatformId());
+                file.setIdInPlatform((String) workMap.get("id"));
+                file.setFileUrl(fileUrl);
+                file.setFileType(fileUrl.substring(fileUrl.lastIndexOf(".") + 1));
+                file.setFileName(fileUrl.substring(fileUrl.lastIndexOf("/") + 1));
+                file.setFilePath("/" + artist.getName() + "/");
+                file.setPageUrl("https://www.pixiv.net/artworks/" + workMap.get("id"));
+
+                fileList.add(file);
+            }
+        }
+
+        return setFileUrls(fileList);
+    }
+
+
+    public List<File> setFileUrls(List<File> fileList) {
+
+        List<CompletableFuture<File>> fileCompletableFutureList = new ArrayList<>();
+        // 正则
+        String regex = "\"original\":\"(.*?)\"},\"";
+        Pattern pattern = Pattern.compile(regex);
+
+
+        for (File file : fileList) {
+
+            // 提交任务
+            CompletableFuture<File> fileCompletableFuture = CompletableFuture.supplyAsync(() -> {
+                // 获得响应
+                logger.info("正在获取详情页为：" + file.getPageUrl() + "的文件地址");
+
+                String responseString = asyncHttpUtil.sendGetRequest(file.getPageUrl());
+
+                // 通过正则获得文件地址
+                String fileUrl = null;
+                Matcher matcher = pattern.matcher(responseString);
+                if (matcher.find()) {
+                    fileUrl = matcher.group(1);
+                }
+
+                // 获得文件路径、类型和文件名
+                file.setFileUrl(fileUrl);
+                file.setFileType(fileUrl.substring(fileUrl.lastIndexOf(".") + 1));
+                file.setFileName("pixiv-" + file.getIdInPlatform() + "-" + file.getFileName() + "." + file.getFileType());
+
+                return file;
+            }, threadPoolTaskExecutor);
+
+            fileCompletableFutureList.add(fileCompletableFuture);
+        }
+
+        // 等待所有异步任务完成
+        CompletableFuture<Void> allOf = CompletableFuture.allOf(fileCompletableFutureList.toArray(new CompletableFuture[0]));
+
+
+        // 当所有异步任务完成后，将它们的结果合并成一个List<String>并返回
+        CompletableFuture<List<File>> listCompletableFuture = allOf.thenApply(v ->
+                fileCompletableFutureList.stream()
+                        .map(CompletableFuture::join) // 获取各异步任务的结果
+                        .collect(Collectors.toList()) // 将结果收集为List
+        );
+
+        return listCompletableFuture.join();
     }
 
 

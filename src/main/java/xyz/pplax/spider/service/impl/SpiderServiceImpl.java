@@ -1,6 +1,9 @@
 package xyz.pplax.spider.service.impl;
 
 import com.alibaba.fastjson2.JSON;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import xyz.pplax.spider.dao.ArtistDao;
@@ -13,14 +16,19 @@ import xyz.pplax.spider.model.pojo.Platform;
 import xyz.pplax.spider.model.pojo.PlatformArtist;
 import xyz.pplax.spider.service.SpiderService;
 import xyz.pplax.spider.spiders.E621Spider;
+import xyz.pplax.spider.spiders.PixivSpider;
 import xyz.pplax.spider.spiders.Rule34PahealSpider;
 import xyz.pplax.spider.spiders.Rule34UsSpider;
 import xyz.pplax.spider.utils.AsyncHttpUtil;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class SpiderServiceImpl implements SpiderService {
+
+    private final static Logger logger = LoggerFactory.getLogger(SpiderServiceImpl.class);
 
     @Autowired
     private PlatformDao platformDao;
@@ -39,6 +47,9 @@ public class SpiderServiceImpl implements SpiderService {
 
     @Autowired
     private Rule34UsSpider rule34UsSpider;
+
+    @Autowired
+    private PixivSpider pixivSpider;
 
     @Autowired
     private AsyncHttpUtil asyncHttpUtil;
@@ -90,6 +101,21 @@ public class SpiderServiceImpl implements SpiderService {
         }
         if (platform.getName().equals(PlatformConstants.PIXIV)) {
             // 执行pixiv的爬虫
+
+            try {
+                // 获得文件列表
+                fileList = pixivSpider.getFileList(platformArtist, artist);
+
+                // 设置请求头
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Referer", "https://www.pixiv.net/users/" + platformArtist.getIdInPlatform() + "/illustrations");
+
+                // 下载
+                asyncHttpUtil.downloadBatch(fileList, headers);
+
+            } catch (JsonProcessingException e) {
+                logger.error(e.getMessage());
+            }
 
         }
 

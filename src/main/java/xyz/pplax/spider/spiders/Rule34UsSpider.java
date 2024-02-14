@@ -113,7 +113,7 @@ public class Rule34UsSpider {
             // 提交任务
             CompletableFuture<File> fileCompletableFuture = CompletableFuture.supplyAsync(() -> {
                 // 获得响应
-                logger.info("正在获取详情页为：" + file.getPageUrl() + "的文件路径");
+                logger.info("正在获取详情页为：" + file.getPageUrl() + "的文件地址");
 
                 String responseString = asyncHttpUtil.sendGetRequest(file.getPageUrl());
 

@@ -77,6 +77,39 @@ public class AsyncHttpUtil {
     }
 
     /**
+     * 对url列表进行批量请求，携带headers
+     * @param urlList
+     * @return
+     */
+    public List<String> sendGetRequestBatch(List<String> urlList, Map<String,String> headers) {
+        List<CompletableFuture<String>> futures = new ArrayList<>();
+
+        for (String url : urlList) {
+
+            logger.info(String.format("正在获取：%s的页面内容", url));
+
+            // 提交任务
+            CompletableFuture<String> future = CompletableFuture.supplyAsync(() -> {
+                return sendGetRequest(url, headers);
+            }, threadPoolTaskExecutor);
+            futures.add(future);
+
+        }
+
+        // 等待所有异步任务完成
+        CompletableFuture<Void> allOf = CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]));
+
+        // 当所有异步任务完成后，将它们的结果合并成一个List<String>并返回
+        CompletableFuture<List<String>> listCompletableFuture = allOf.thenApply(v ->
+                futures.stream()
+                        .map(CompletableFuture::join) // 获取各异步任务的结果
+                        .collect(Collectors.toList()) // 将结果收集为List
+        );
+
+        return listCompletableFuture.join();
+    }
+
+    /**
      * 对url列表进行批量请求
      * @param urlList
      * @return
@@ -109,6 +142,38 @@ public class AsyncHttpUtil {
         return listCompletableFuture.join();
     }
 
+    /**
+     * 对url列表进行批量请求，携带headers
+     * @param urlList
+     * @return
+     */
+    public List<Response> getBatch(List<String> urlList, Map<String,String> headers) {
+        List<CompletableFuture<Response>> futures = new ArrayList<>();
+
+        for (String url : urlList) {
+
+            logger.info(String.format("正在获取：%s的页面内容", url));
+
+            // 提交任务
+            CompletableFuture<Response> future = CompletableFuture.supplyAsync(() -> {
+                return get(url, headers);
+            }, threadPoolTaskExecutor);
+            futures.add(future);
+
+        }
+
+        // 等待所有异步任务完成
+        CompletableFuture<Void> allOf = CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]));
+
+        // 当所有异步任务完成后，将它们的结果合并成一个List<String>并返回
+        CompletableFuture<List<Response>> listCompletableFuture = allOf.thenApply(v ->
+                futures.stream()
+                        .map(CompletableFuture::join) // 获取各异步任务的结果
+                        .collect(Collectors.toList()) // 将结果收集为List
+        );
+
+        return listCompletableFuture.join();
+    }
 
     /**
      * 下载
