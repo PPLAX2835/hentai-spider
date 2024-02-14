@@ -148,6 +148,49 @@ public class AsyncHttpUtil {
     }
 
     /**
+     * 下载，携带headers
+     * @param file
+     * @param headers
+     * @return
+     * @throws IOException
+     */
+    public Boolean download(File file, Map<String, String> headers) throws IOException {
+
+        // 判断文件是否已经下载过
+        if (FileUtils.fileExists(basePath + file.getFilePath() + file.getFileName())) {
+            logger.warn("文件已经下载过了");
+            logger.info("文件信息：" + JSON.toJSONString(file));
+            return false;
+        }
+
+        // 获得响应
+        Response response = get(file.getFileUrl(), headers);
+
+        // 从响应中获取输入流
+        ReadableByteChannel inputChannel = Channels.newChannel(response.getResponseBodyAsStream());
+
+        // 创建目录
+        FileUtils.createDirectory(basePath + file.getFilePath());
+
+        // 创建本地文件输出流
+        FileOutputStream fos = new FileOutputStream(basePath + file.getFilePath() + file.getFileName());
+        FileChannel outputChannel = fos.getChannel();
+
+        // 将输入流的内容写入本地文件
+        outputChannel.transferFrom(inputChannel, 0, Long.MAX_VALUE);
+
+        // 持久化到数据库
+        fileDao.insert(file);
+
+        // 关闭资源
+        inputChannel.close();
+        outputChannel.close();
+        fos.close();
+
+        return true;
+    }
+
+    /**
      * 批量下载
      * @param fileList
      */
@@ -158,6 +201,31 @@ public class AsyncHttpUtil {
             CompletableFuture<Boolean> booleanCompletableFuture = CompletableFuture.supplyAsync(() -> {
                 try {
                     return download(file);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return false;
+            }, threadPoolTaskExecutor);
+
+            futureList.add(booleanCompletableFuture);
+        }
+
+        // 等待所有异步任务完成
+        CompletableFuture<Void> allOf = CompletableFuture.allOf(futureList.toArray(new CompletableFuture[0]));
+    }
+
+    /**
+     * 批量下载，携带参数
+     * @param fileList
+     * @param headers
+     */
+    public void downloadBatch(List<File> fileList, Map<String,String> headers) {
+        List<CompletableFuture<Boolean>> futureList = new ArrayList<>();
+
+        for (File file : fileList) {
+            CompletableFuture<Boolean> booleanCompletableFuture = CompletableFuture.supplyAsync(() -> {
+                try {
+                    return download(file, headers);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
