@@ -46,7 +46,7 @@ public class Rule34UsSpider {
     public List<File> getFileList(PlatformArtist platformArtist, Artist artist) {
 
         String homePageUrl = platformArtist.getHomepageUrl();
-        int maxPage = -1;
+        int maxPage = 1;
 
         // 获得html文本
         String responseString = asyncHttpUtil.sendGetRequest(homePageUrl);
@@ -54,8 +54,10 @@ public class Rule34UsSpider {
         // 获得最大页码
         Document doc = Jsoup.parseBodyFragment(responseString);
         Elements lastPageA = doc.getElementsByAttributeValue("alt", "last page");
-        String lastPageUrl = lastPageA.get(0).attr("href");
-        maxPage = Integer.parseInt(lastPageUrl.substring(lastPageUrl.lastIndexOf("=") + 1));
+        if (lastPageA.size() != 0) {
+            String lastPageUrl = lastPageA.get(0).attr("href");
+            maxPage = Integer.parseInt(lastPageUrl.substring(lastPageUrl.lastIndexOf("=") + 1));
+        }
 
         // 获得每个页面的html文本
         List<String> urlList = new ArrayList<>();
@@ -146,13 +148,11 @@ public class Rule34UsSpider {
 
 
         // 当所有异步任务完成后，将它们的结果合并成一个List<String>并返回
-        CompletableFuture<List<File>> listCompletableFuture = allOf.thenApply(v ->
+        return allOf.thenApply(v ->
                 fileCompletableFutureList.stream()
                         .map(CompletableFuture::join) // 获取各异步任务的结果
                         .collect(Collectors.toList()) // 将结果收集为List
         );
-
-        return listCompletableFuture;
     }
 
 

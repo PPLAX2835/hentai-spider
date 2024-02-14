@@ -39,7 +39,7 @@ public class Rule34PahealSpider {
     public List<File> getFileList(PlatformArtist platformArtist, Artist artist) {
 
         String homePageUrl = platformArtist.getHomepageUrl();
-        int maxPage = Integer.MIN_VALUE;
+        int maxPage = 1;
         List<File> fileList = new ArrayList<>();
 
         // 获得html文本
@@ -73,6 +73,7 @@ public class Rule34PahealSpider {
 
         // 批量进行请求，等待异步请求完成，并获取结果
         List<String> respList = asyncHttpUtil.sendGetRequestBatch(urlList);
+        respList.add(responseString);
         for (String resp : respList) {
 
             Document doc = Jsoup.parseBodyFragment(resp);

@@ -41,7 +41,7 @@ public class E621Spider {
      */
     public List<File> getFileList(PlatformArtist platformArtist, Artist artist) {
         String homePageUrl = platformArtist.getHomepageUrl();
-        int maxPage = Integer.MIN_VALUE;
+        int maxPage = 1;
         List<File> fileList = new ArrayList<>();
 
         // 获得html文本
