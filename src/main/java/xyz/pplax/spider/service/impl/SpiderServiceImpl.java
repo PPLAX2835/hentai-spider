@@ -15,10 +15,7 @@ import xyz.pplax.spider.model.pojo.File;
 import xyz.pplax.spider.model.pojo.Platform;
 import xyz.pplax.spider.model.pojo.PlatformArtist;
 import xyz.pplax.spider.service.SpiderService;
-import xyz.pplax.spider.spiders.E621Spider;
-import xyz.pplax.spider.spiders.PixivSpider;
-import xyz.pplax.spider.spiders.Rule34PahealSpider;
-import xyz.pplax.spider.spiders.Rule34UsSpider;
+import xyz.pplax.spider.spiders.*;
 import xyz.pplax.spider.utils.AsyncHttpUtil;
 
 import java.util.HashMap;
@@ -50,6 +47,9 @@ public class SpiderServiceImpl implements SpiderService {
 
     @Autowired
     private PixivSpider pixivSpider;
+
+    @Autowired
+    private FurAffinitySpider furAffinitySpider;
 
     @Autowired
     private AsyncHttpUtil asyncHttpUtil;
@@ -116,6 +116,16 @@ public class SpiderServiceImpl implements SpiderService {
             } catch (JsonProcessingException e) {
                 logger.error(e.getMessage());
             }
+
+        }
+        if (platform.getName().equals(PlatformConstants.FURAFFINITY)) {
+            // 执行furaffinity的爬虫
+
+            // 获得文件列表
+            fileList = furAffinitySpider.getFileList(platformArtist, artist);
+
+            // 下载
+            asyncHttpUtil.downloadBatch(fileList);
 
         }
 

@@ -101,7 +101,7 @@ CREATE TABLE `platform` (
 
 LOCK TABLES `platform` WRITE;
 /*!40000 ALTER TABLE `platform` DISABLE KEYS */;
-INSERT INTO `platform` (`id`, `name`, `url`, `update_at`, `insert_at`) VALUES (1,'e621','https://e621.net','2024-02-10 13:12:03','2024-02-10 13:12:03'),(2,'rule34_paheal','https://rule34.paheal.net/','2024-02-12 11:24:37','2024-02-11 20:37:30'),(3,'rule34_us','https://rule34.us/','2024-02-12 11:27:57','2024-02-12 11:25:00'),(4,'pixiv','https://www.pixiv.net/','2024-02-12 11:27:57','2024-02-12 11:27:02');
+INSERT INTO `platform` (`id`, `name`, `url`, `update_at`, `insert_at`) VALUES (1,'e621','https://e621.net','2024-02-14 21:24:25','2024-02-10 13:12:03'),(2,'rule34_paheal','https://rule34.paheal.net/','2024-02-14 21:24:25','2024-02-11 20:37:30'),(3,'rule34_us','https://rule34.us/','2024-02-14 21:24:25','2024-02-12 11:25:00'),(4,'pixiv','https://www.pixiv.net/','2024-02-14 21:24:25','2024-02-12 11:27:02'),(5,'furaffinity','https://www.furaffinity.net/','2024-02-16 15:58:21','2024-02-16 15:58:18');
 /*!40000 ALTER TABLE `platform` ENABLE KEYS */;
 UNLOCK TABLES;
 

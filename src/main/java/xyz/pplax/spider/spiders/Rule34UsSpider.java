@@ -97,7 +97,10 @@ public class Rule34UsSpider {
             }
         }
 
-        return getFileListByPageUrl(fileList).join();
+        List<File> result = getFileListByPageUrl(fileList).join();
+        logger.info(String.format("数据抓取完成，总共%d个文件：", result.size()));
+
+        return result;
     }
 
 

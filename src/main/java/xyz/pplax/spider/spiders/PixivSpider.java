@@ -3,10 +3,6 @@ package xyz.pplax.spider.spiders;
 import com.alibaba.fastjson2.JSON;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +16,6 @@ import xyz.pplax.spider.utils.AsyncHttpUtil;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Component
@@ -34,10 +29,10 @@ public class PixivSpider {
     @Autowired
     private Executor threadPoolTaskExecutor;
 
-    @Value("${pplax.spider.pixiv.cookie}")
+    @Value("${pplax.spider.pixiv.cookie:PPLAX}")
     private String cookie;
 
-    @Value("${pplax.spider.pixiv.enableCookie}")
+    @Value("${pplax.spider.pixiv.enableCookie:false}")
     private boolean enableCookie;
 
     @Value("${pplax.spider.user-agent}")
@@ -98,13 +93,6 @@ public class PixivSpider {
         }
 
         // 通过这些地址请求获得响应结果
-//        List<String> worksRespJsonList = new ArrayList<>();
-//        for (String workDetailGetUrl : workDetailGetUrls) {
-//            logger.info("文件详情的请求地址：" + workDetailGetUrl);
-//            String worksRespJson = asyncHttpUtil.sendGetRequest(workDetailGetUrl, headers);
-//            worksRespJsonList.add(worksRespJson);
-//            logger.info("文件详情的请求结果：" + worksRespJson);
-//        }
         List<String> worksRespJsonList = asyncHttpUtil.sendGetRequestBatch(workDetailGetUrls, headers);
         for (String workDetailGetUrl : workDetailGetUrls) {
             logger.info("文件详情的请求地址：" + workDetailGetUrl);
@@ -138,6 +126,9 @@ public class PixivSpider {
                 fileList.add(file);
             }
         }
+
+        List<File> result = setFileUrls(fileList).join();
+        logger.info(String.format("数据抓取完成，总共%d个文件：", result.size()));
 
         return setFileUrls(fileList).join();
     }

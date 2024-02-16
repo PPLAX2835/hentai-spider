@@ -13,4 +13,6 @@ public class PlatformConstants {
 
     public static String PIXIV = "pixiv";
 
+    public static String FURAFFINITY = "furaffinity";
+
 }
