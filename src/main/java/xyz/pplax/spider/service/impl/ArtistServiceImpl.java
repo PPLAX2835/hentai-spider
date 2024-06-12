@@ -31,7 +31,14 @@ public class ArtistServiceImpl implements ArtistService {
 
     @Override
     public List<Artist> getPageByKeyword(int page, int limit, String keyword) {
-        return artistDao.selectPageByName((page - 1) * limit, limit, keyword);
+        List<Artist> artistList = artistDao.selectPageByName((page - 1) * limit, limit, keyword);
+
+        // 获得已下载作品总数
+        for (Artist artist : artistList) {
+            artist.setTotalCount(fileDao.selectTotalByArtistId(artist.getId()));
+        }
+
+        return artistList;
     }
 
     @Override

@@ -2,6 +2,7 @@ package xyz.pplax.spider.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import xyz.pplax.spider.dao.FileDao;
 import xyz.pplax.spider.dao.PlatformArtistDao;
 import xyz.pplax.spider.dao.PlatformDao;
 import xyz.pplax.spider.model.pojo.PlatformArtist;
@@ -19,6 +20,9 @@ public class PlatformArtistServiceImpl implements PlatformArtistService {
 
     @Autowired
     private PlatformDao platformDao;
+
+    @Autowired
+    private FileDao fileDao;
 
     @Override
     public List<PlatformArtist> getListByArtistId(Long id) {
@@ -49,6 +53,7 @@ public class PlatformArtistServiceImpl implements PlatformArtistService {
             platformArtistVO.setPlatformArtistId(platformArtist.getId());
             platformArtistVO.setPlatformId(platformArtist.getPlatformId());
             platformArtistVO.setIdInPlatform(platformArtist.getIdInPlatform());
+            platformArtistVO.setCount(fileDao.selectTotalByArtistIdAndPlatformId(platformArtist.getArtistId(), platformArtist.getPlatformId()));
 
             platformArtistVoList.add(platformArtistVO);
         }

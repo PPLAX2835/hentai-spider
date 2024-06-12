@@ -45,4 +45,8 @@ public class PlatformArtistVO {
      */
     private String homepageUrl;
 
+    /**
+     * 作品数量
+     */
+    private Long count;
 }

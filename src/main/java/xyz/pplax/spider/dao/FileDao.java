@@ -28,6 +28,10 @@ public interface FileDao {
 
     List<File> selectPageByPlatformId(@Param("limit") Integer limit, @Param("offset") Integer offset, @Param("id") Long id);
 
+    long selectTotalByArtistId(Long id);
+
+    long selectTotalByArtistIdAndPlatformId(@Param("artistId") Long artistId, @Param("platformId") Long platformId);
+
     int updateByPrimaryKeySelective(File record);
 
     int updateByPrimaryKey(File record);

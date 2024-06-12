@@ -45,6 +45,17 @@
     where platform_id = #{id,jdbcType=BIGINT}
     limit #{limit,jdbcType=INTEGER}, #{offset,jdbcType=INTEGER}
   </select>
+  <select id="selectTotalByArtistId" resultType="long">
+    select count(*)
+    from file
+    where artist_id = #{id,jdbcType=BIGINT};
+  </select>
+  <select id="selectTotalByArtistIdAndPlatformId" resultType="long">
+    select count(*)
+    from file
+    where artist_id = #{artistId,jdbcType=BIGINT}
+    and platform_id = #{platformId,jdbcType=BIGINT};
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from file
     where id = #{id,jdbcType=BIGINT}

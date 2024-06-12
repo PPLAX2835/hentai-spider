@@ -30,5 +30,14 @@ public class Artist implements Serializable {
      */
     private Date insertAt;
 
+    /*
+     * 非表字段
+     */
+
+    /**
+     * 已下载作品总数
+     */
+    private Long totalCount;
+
     private static final long serialVersionUID = 1L;
 }
