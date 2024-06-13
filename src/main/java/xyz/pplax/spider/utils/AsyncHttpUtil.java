@@ -231,12 +231,13 @@ public class AsyncHttpUtil {
      */
     public Boolean download(File file, Map<String, String> headers) throws IOException {
 
+        File existFile = fileDao.selectByPlatformIdAndIdInPlatform(file.getPlatformId(), file.getIdInPlatform());
+
         // 判断文件是否已经下载过
         if (FileUtils.fileExists(basePath + file.getFilePath() + file.getFileName())) {
             logger.warn("文件已经下载过了");
-            
+
             // 持久化到数据库
-            File existFile = fileDao.selectByPlatformIdAndIdInPlatform(file.getPlatformId(), file.getIdInPlatform());
             if (existFile == null) {
                 fileDao.insert(file);
             }
@@ -262,7 +263,6 @@ public class AsyncHttpUtil {
         outputChannel.transferFrom(inputChannel, 0, Long.MAX_VALUE);
 
         // 持久化到数据库
-        File existFile = fileDao.selectByPlatformIdAndIdInPlatform(file.getPlatformId(), file.getIdInPlatform());
         if (existFile == null) {
             fileDao.insert(file);
         }
