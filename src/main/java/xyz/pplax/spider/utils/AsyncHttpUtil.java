@@ -234,6 +234,13 @@ public class AsyncHttpUtil {
         // 判断文件是否已经下载过
         if (FileUtils.fileExists(basePath + file.getFilePath() + file.getFileName())) {
             logger.warn("文件已经下载过了");
+            
+            // 持久化到数据库
+            File existFile = fileDao.selectByPlatformIdAndIdInPlatform(file.getPlatformId(), file.getIdInPlatform());
+            if (existFile == null) {
+                fileDao.insert(file);
+            }
+
             logger.info("文件信息：" + JSON.toJSONString(file));
             return false;
         }
