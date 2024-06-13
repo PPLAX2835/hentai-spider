@@ -45,7 +45,7 @@ public class E621Spider {
         List<File> fileList = new ArrayList<>();
 
         // 获得html文本
-        String responseString = asyncHttpUtil.sendGetRequest(homePageUrl);
+        String responseString = asyncHttpUtil.sendGetRequest(homePageUrl, 0);
 
         // 编译正则表达式
         Pattern idAndUrlPattern = Pattern.compile(idAndUrlRegex);

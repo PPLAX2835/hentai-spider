@@ -43,7 +43,7 @@ public class Rule34PahealSpider {
         List<File> fileList = new ArrayList<>();
 
         // 获得html文本
-        String responseString = asyncHttpUtil.sendGetRequest(homePageUrl);
+        String responseString = asyncHttpUtil.sendGetRequest(homePageUrl, 0);
         homePageUrl = homePageUrl.substring(0, homePageUrl.lastIndexOf("/"));
 
         // 编译正则表达式

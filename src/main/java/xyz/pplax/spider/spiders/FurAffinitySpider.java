@@ -61,7 +61,7 @@ public class FurAffinitySpider {
         while (true) {
             String  galleryUrlPage = galleryUrl + pageNum;
             logger.info(String.format("正在获取第%d页的数据", pageNum));
-            String respPage = asyncHttpUtil.sendGetRequest(galleryUrlPage, headers);
+            String respPage = asyncHttpUtil.sendGetRequest(galleryUrlPage, headers, 0);
 
 
             Document document = Jsoup.parseBodyFragment(respPage);
@@ -109,7 +109,7 @@ public class FurAffinitySpider {
                 // 获得响应
                 logger.info("正在获取详情页为：" + file.getPageUrl() + "的文件地址");
 
-                String responseString = asyncHttpUtil.sendGetRequest(file.getPageUrl(), headers);
+                String responseString = asyncHttpUtil.sendGetRequest(file.getPageUrl(), headers, 0);
 
                 Document document = Jsoup.parseBodyFragment(responseString);
 

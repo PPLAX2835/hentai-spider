@@ -41,6 +41,9 @@ public class AsyncHttpUtil {
     @Value("${pplax.spider.basepath}")
     private String basePath;
 
+    @Value("${pplax.spider.request.maxFailNum}")
+    private int maxFailNum;
+
     private final static Logger logger = LoggerFactory.getLogger(AsyncHttpUtil.class);
 
     /**
@@ -57,7 +60,7 @@ public class AsyncHttpUtil {
 
             // 提交任务
             CompletableFuture<String> future = CompletableFuture.supplyAsync(() -> {
-                return sendGetRequest(url);
+                return sendGetRequest(url, 0);
             }, threadPoolTaskExecutor);
             futures.add(future);
 
@@ -90,7 +93,7 @@ public class AsyncHttpUtil {
 
             // 提交任务
             CompletableFuture<String> future = CompletableFuture.supplyAsync(() -> {
-                return sendGetRequest(url, headers);
+                return sendGetRequest(url, headers, 0);
             }, threadPoolTaskExecutor);
             futures.add(future);
 
@@ -123,7 +126,7 @@ public class AsyncHttpUtil {
 
             // 提交任务
             CompletableFuture<Response> future = CompletableFuture.supplyAsync(() -> {
-                return get(url);
+                return get(url, 0);
             }, threadPoolTaskExecutor);
             futures.add(future);
 
@@ -156,7 +159,7 @@ public class AsyncHttpUtil {
 
             // 提交任务
             CompletableFuture<Response> future = CompletableFuture.supplyAsync(() -> {
-                return get(url, headers);
+                return get(url, headers, 0);
             }, threadPoolTaskExecutor);
             futures.add(future);
 
@@ -190,7 +193,7 @@ public class AsyncHttpUtil {
         }
 
         // 获得响应
-        Response response = get(file.getFileUrl());
+        Response response = get(file.getFileUrl(), 0);
 
         // 从响应中获取输入流
         ReadableByteChannel inputChannel = Channels.newChannel(response.getResponseBodyAsStream());
@@ -236,7 +239,7 @@ public class AsyncHttpUtil {
         }
 
         // 获得响应
-        Response response = get(file.getFileUrl(), headers);
+        Response response = get(file.getFileUrl(), headers, 0);
 
         // 从响应中获取输入流
         ReadableByteChannel inputChannel = Channels.newChannel(response.getResponseBodyAsStream());
@@ -317,41 +320,56 @@ public class AsyncHttpUtil {
     /**
      * 发送get请求
      * @param url
+     * @param num
      * @return
      */
-    public String sendGetRequest(String url) {
+    public String sendGetRequest(String url, int num) {
         try {
             Response response = asyncHttpClient.prepareGet(url).execute().get();
             return response.getResponseBody();
         } catch (InterruptedException | ExecutionException e) {
             logger.error(e.getMessage());
+
+            if (num >= maxFailNum) {
+                logger.error("Too many failures, stop recursion");
+                return "";
+            }
+
             logger.warn("Now retrying");
-            return sendGetRequest(url);
+            return sendGetRequest(url, num + 1);
         }
     }
 
     /**
      * 进行get请求，返回Response
      * @param url
+     * @param num
      * @return
      */
-    public Response get(String url) {
+    public Response get(String url, int num) {
         try {
             return asyncHttpClient.prepareGet(url).execute().get();
         } catch (InterruptedException | ExecutionException e) {
             logger.error(e.getMessage());
+
+            if (num >= maxFailNum) {
+                logger.error("Too many failures, stop recursion");
+                return null;
+            }
+
             logger.warn("Now retrying");
-            return get(url);
+            return get(url, num + 1);
         }
     }
 
     /**
-     * 发送get请求，携带headers
+     * 送get请求，携带headers
      * @param url
      * @param headers
+     * @param num
      * @return
      */
-    public String sendGetRequest(String url, Map<String, String> headers){
+    public String sendGetRequest(String url, Map<String, String> headers, int num){
         org.asynchttpclient.BoundRequestBuilder requestBuilder = asyncHttpClient.prepareGet(url);
         for (Map.Entry<String, String> entry : headers.entrySet()) {
             requestBuilder.addHeader(entry.getKey(), entry.getValue());
@@ -361,8 +379,14 @@ public class AsyncHttpUtil {
             return response.getResponseBody();
         } catch (ExecutionException | InterruptedException e) {
             logger.error(e.getMessage());
+
+            if (num >= maxFailNum) {
+                logger.error("Too many failures, stop recursion");
+                return "";
+            }
+
             logger.warn("Now retrying");
-            return sendGetRequest(url, headers);
+            return sendGetRequest(url, headers, num + 1);
         }
     }
 
@@ -370,9 +394,10 @@ public class AsyncHttpUtil {
      * 发送get请求，携带headers，返回response
      * @param url
      * @param headers
+     * @param num
      * @return
      */
-    public Response get(String url, Map<String, String> headers){
+    public Response get(String url, Map<String, String> headers, int num){
         org.asynchttpclient.BoundRequestBuilder requestBuilder = asyncHttpClient.prepareGet(url);
         for (Map.Entry<String, String> entry : headers.entrySet()) {
             requestBuilder.addHeader(entry.getKey(), entry.getValue());
@@ -381,8 +406,14 @@ public class AsyncHttpUtil {
             return requestBuilder.execute().get();
         } catch (ExecutionException | InterruptedException e) {
             logger.error(e.getMessage());
+
+            if (num >= maxFailNum) {
+                logger.error("Too many failures, stop recursion");
+                return null;
+            }
+
             logger.warn("Now retrying");
-            return get(url, headers);
+            return get(url, headers, num + 1);
         }
     }
 
@@ -390,9 +421,10 @@ public class AsyncHttpUtil {
      * 发送post请求，带参数
      * @param url
      * @param params
+     * @param num
      * @return
      */
-    public String sendPostRequest(String url, Map<String, String> params){
+    public String sendPostRequest(String url, Map<String, String> params, int num){
         org.asynchttpclient.BoundRequestBuilder requestBuilder = asyncHttpClient.preparePost(url);
         for (Map.Entry<String, String> entry : params.entrySet()) {
             requestBuilder.addFormParam(entry.getKey(), entry.getValue());
@@ -402,8 +434,14 @@ public class AsyncHttpUtil {
             return response.getResponseBody();
         } catch (ExecutionException | InterruptedException e) {
             logger.error(e.getMessage());
+
+            if (num >= maxFailNum) {
+                logger.error("Too many failures, stop recursion");
+                return null;
+            }
+
             logger.warn("Now retrying");
-            return sendGetRequest(url, params);
+            return sendPostRequest(url, params, num + 1);
         }
     }
 
@@ -411,9 +449,10 @@ public class AsyncHttpUtil {
      * 发送post请求，带参数
      * @param url
      * @param params
+     * @param num
      * @return
      */
-    public Response post(String url, Map<String, String> params){
+    public Response post(String url, Map<String, String> params, int num){
         org.asynchttpclient.BoundRequestBuilder requestBuilder = asyncHttpClient.preparePost(url);
         for (Map.Entry<String, String> entry : params.entrySet()) {
             requestBuilder.addFormParam(entry.getKey(), entry.getValue());
@@ -423,8 +462,14 @@ public class AsyncHttpUtil {
             return response;
         } catch (ExecutionException | InterruptedException e) {
             logger.error(e.getMessage());
+
+            if (num >= maxFailNum) {
+                logger.error("Too many failures, stop recursion");
+                return null;
+            }
+
             logger.warn("Now retrying");
-            return post(url, params);
+            return post(url, params, num + 1);
         }
     }
 
@@ -433,9 +478,11 @@ public class AsyncHttpUtil {
      * 发送post请求，带参数和headers
      * @param url
      * @param params
+     * @param headers
+     * @param num
      * @return
      */
-    public String sendPostRequest(String url, Map<String, String> params, Map<String, String> headers) {
+    public String sendPostRequest(String url, Map<String, String> params, Map<String, String> headers, int num) {
         org.asynchttpclient.BoundRequestBuilder requestBuilder = asyncHttpClient.preparePost(url);
         for (Map.Entry<String, String> entry : params.entrySet()) {
             requestBuilder.addFormParam(entry.getKey(), entry.getValue());
@@ -448,8 +495,14 @@ public class AsyncHttpUtil {
             return response.getResponseBody();
         } catch (ExecutionException | InterruptedException e) {
             logger.error(e.getMessage());
+
+            if (num >= maxFailNum) {
+                logger.error("Too many failures, stop recursion");
+                return null;
+            }
+
             logger.warn("Now retrying");
-            return sendGetRequest(url, params);
+            return sendPostRequest(url, params, num + 1);
         }
     }
 
@@ -457,10 +510,11 @@ public class AsyncHttpUtil {
      * 发送post请求，带参数和headers，返回response
      * @param url
      * @param params
+     * @param headers
+     * @param num
      * @return
      */
-
-    public Response post(String url, Map<String, String> params, Map<String, String> headers) {
+    public Response post(String url, Map<String, String> params, Map<String, String> headers, int num) {
         org.asynchttpclient.BoundRequestBuilder requestBuilder = asyncHttpClient.preparePost(url);
         for (Map.Entry<String, String> entry : params.entrySet()) {
             requestBuilder.addFormParam(entry.getKey(), entry.getValue());
@@ -473,8 +527,14 @@ public class AsyncHttpUtil {
             return response;
         } catch (ExecutionException | InterruptedException e) {
             logger.error(e.getMessage());
+
+            if (num >= maxFailNum) {
+                logger.error("Too many failures, stop recursion");
+                return null;
+            }
+
             logger.warn("Now retrying");
-            return post(url, params);
+            return post(url, params, num + 1);
         }
     }
 

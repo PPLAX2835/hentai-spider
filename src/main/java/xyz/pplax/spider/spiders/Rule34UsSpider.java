@@ -49,7 +49,7 @@ public class Rule34UsSpider {
         int maxPage = 1;
 
         // 获得html文本
-        String responseString = asyncHttpUtil.sendGetRequest(homePageUrl);
+        String responseString = asyncHttpUtil.sendGetRequest(homePageUrl, 0);
 
         // 获得最大页码
         Document doc = Jsoup.parseBodyFragment(responseString);
@@ -120,7 +120,7 @@ public class Rule34UsSpider {
                 // 获得响应
                 logger.info("正在获取详情页为：" + file.getPageUrl() + "的文件地址");
 
-                String responseString = asyncHttpUtil.sendGetRequest(file.getPageUrl());
+                String responseString = asyncHttpUtil.sendGetRequest(file.getPageUrl(), 0);
 
                 Document document = Jsoup.parseBodyFragment(responseString);
 

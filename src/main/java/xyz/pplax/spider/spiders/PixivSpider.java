@@ -59,7 +59,7 @@ public class PixivSpider {
         }
         String profileGetUrl = "https://www.pixiv.net/ajax/user/" + platformArtist.getIdInPlatform() + "/profile/all";
 
-        String profileRespJson = asyncHttpUtil.sendGetRequest(profileGetUrl, headers);
+        String profileRespJson = asyncHttpUtil.sendGetRequest(profileGetUrl, headers, 0);
 
         // 处理
         ObjectMapper objectMapper = new ObjectMapper();
@@ -146,7 +146,7 @@ public class PixivSpider {
                 // 获得响应
                 logger.info("正在获取地址为：" + "https://www.pixiv.net/ajax/illust/" + file.getIdInPlatform() + "的文件地址");
 
-                String respJsonString = asyncHttpUtil.sendGetRequest("https://www.pixiv.net/ajax/illust/" + file.getIdInPlatform(), headers);
+                String respJsonString = asyncHttpUtil.sendGetRequest("https://www.pixiv.net/ajax/illust/" + file.getIdInPlatform(), headers, 0);
 
                 // 获得文件地址
                 ObjectMapper objectMapper = new ObjectMapper();
