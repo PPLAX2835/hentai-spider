@@ -16,7 +16,7 @@
   </resultMap>
   <sql id="Base_Column_List">
     id, max_request_fail_num, `base_path`, `proxy_enable`, proxy_host, proxy_port, user_agent,
-    furaffinity_enable_cookie, pixiv_enable_cookie, pixiv_cookie
+    furaffinity_enable_cookie, furaffinity_cookie, pixiv_enable_cookie, pixiv_cookie
   </sql>
   <select id="selectAll" resultMap="BaseResultMap" >
     select
