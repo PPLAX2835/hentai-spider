@@ -34,7 +34,7 @@
   </select>
   <select id="selectCount" resultType="int">
     select
-    count (*)
+    count(*)
     from platform_artist
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">

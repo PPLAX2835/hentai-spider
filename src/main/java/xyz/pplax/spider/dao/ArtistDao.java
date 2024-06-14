@@ -14,7 +14,7 @@ public interface ArtistDao {
 
     int insertSelective(Artist record);
 
-    int selectCountByKeyword(String keyword);
+    int selectCountByKeyword(@Param("keyword") String keyword);
 
     Artist selectByPrimaryKey(Long id);
 
