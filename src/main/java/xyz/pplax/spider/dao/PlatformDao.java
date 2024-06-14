@@ -17,6 +17,8 @@ public interface PlatformDao {
 
     List<Platform> selectAll();
 
+    int selectCount();
+
     int updateByPrimaryKeySelective(Platform record);
 
     int updateByPrimaryKey(Platform record);

@@ -37,6 +37,11 @@ public class PlatformArtistServiceImpl implements PlatformArtistService {
     }
 
     @Override
+    public Integer count() {
+        return platformArtistDao.selectCount();
+    }
+
+    @Override
     public List<PlatformArtistVO> getVoListByArtistId(Long id) {
         List<PlatformArtist> platformArtistList = getListByArtistId(id);
 

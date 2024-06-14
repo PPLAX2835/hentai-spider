@@ -25,6 +25,11 @@ public class ArtistServiceImpl implements ArtistService {
     private PlatformArtistDao platformArtistDao;
 
     @Override
+    public Integer count(String keyword) {
+        return artistDao.selectCountByKeyword(keyword);
+    }
+
+    @Override
     public Integer add(Artist artist) {
         return artistDao.insertSelective(artist);
     }

@@ -23,7 +23,7 @@ public class PlatformArtistController {
     public String getListByArtistId(@PathVariable("id") Long id) {
         List<PlatformArtistVO> platformArtistVOList = platformArtistService.getVoListByArtistId(id);
 
-        return JSON.toJSONString(new ResponseResult(HttpStatus.SUCCESS, platformArtistVOList.size(), platformArtistVOList));
+        return JSON.toJSONString(new ResponseResult(HttpStatus.SUCCESS, platformArtistService.count(), platformArtistVOList));
     }
 
     @PostMapping(value = "")

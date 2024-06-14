@@ -25,7 +25,7 @@ public class ArtistController {
             return JSON.toJSONString(new ResponseResult(HttpStatus.INTERNAL_SERVER_ERROR));
         }
 
-        return JSON.toJSONString(new ResponseResult(HttpStatus.SUCCESS, artistList.size(), artistList));
+        return JSON.toJSONString(new ResponseResult(HttpStatus.SUCCESS, artistService.count(keyword), artistList));
     }
 
     @PostMapping(value = "")

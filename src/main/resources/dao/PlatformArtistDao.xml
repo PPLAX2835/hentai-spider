@@ -32,6 +32,11 @@
     from platform_artist
     where platform_id = #{id,jdbcType=BIGINT}
   </select>
+  <select id="selectCount" resultType="int">
+    select
+    count (*)
+    from platform_artist
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from platform_artist
     where id = #{id,jdbcType=BIGINT}

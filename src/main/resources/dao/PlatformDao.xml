@@ -22,6 +22,11 @@
     <include refid="Base_Column_List" />
     from platform
   </select>
+  <select id="selectCount" resultType="int">
+    select
+    count (*)
+    from platform
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from platform
     where id = #{id,jdbcType=BIGINT}

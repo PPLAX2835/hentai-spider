@@ -13,9 +13,6 @@
             <h1>平台管理</h1>
             <a href="artist.html"><h3>作者管理</h3></a>
             <a href="config.html"><h3>配置</h3></a>
-            <div class="layui-row">
-                <button class="layui-btn" id="add-btn">添加</button>
-            </div>
 
             <div class="layui-row">
                 <table class="layui-hide" id="platform-table" lay-filter="platform-table"></table>
@@ -45,9 +42,8 @@
                 cols: [[
                     // {checkbox: true, fixed: true},
                     {field:'id', title: 'ID', width: 50, sort: true, fixed: true},
-                    {field:'name', edit: 'text', title: '平台名'},
-                    {field:'url', edit: 'text', title: '地址'},
-                    {fixed: 'right', title: '操作', minWidth: 80, align: 'center', toolbar: '#platform-table-theads-tool'}
+                    {field:'name', title: '平台名'},
+                    {field:'url', title: '地址'}
                 ]]
             });
 
@@ -166,12 +162,6 @@
             });
 
         })
-    </script>
-
-    <script type="text/html" id="platform-table-theads-tool">
-        <div class="layui-btn-container">
-            <a type="button" class="layui-btn layui-btn-primary layui-btn-sm" lay-event="delete">删除</a>
-        </div>
     </script>
 
 </body>

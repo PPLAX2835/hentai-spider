@@ -39,6 +39,11 @@ public class PlatformServiceImpl implements PlatformService {
         return platformDao.deleteByPrimaryKey(id);
     }
 
+    @Override
+    public Integer count() {
+        return platformDao.selectCount();
+    }
+
     /**
      * 因为平台就那几个，分页就没必要了
      * @return

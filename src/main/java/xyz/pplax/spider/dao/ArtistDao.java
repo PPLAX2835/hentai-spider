@@ -14,6 +14,8 @@ public interface ArtistDao {
 
     int insertSelective(Artist record);
 
+    int selectCountByKeyword(String keyword);
+
     Artist selectByPrimaryKey(Long id);
 
     List<Artist> selectPage(@Param("limit") Integer limit, @Param("offset") Integer offset);

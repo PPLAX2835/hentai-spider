@@ -13,6 +13,8 @@ public interface PlatformArtistDao {
 
     int insertSelective(PlatformArtist record);
 
+    int selectCount();
+
     PlatformArtist selectByPrimaryKey(Long id);
 
     List<PlatformArtist> selectListByArtistId(Long id);

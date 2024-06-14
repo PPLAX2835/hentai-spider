@@ -29,6 +29,12 @@
     where name like '%${name}%'
     limit #{limit,jdbcType=INTEGER}, #{offset,jdbcType=INTEGER}
   </select>
+  <select id="selectCountByKeyword" resultType="int">
+    select
+    count (*)
+    from artist
+    where name like '%${name}%'
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from artist
     where id = #{id,jdbcType=BIGINT}

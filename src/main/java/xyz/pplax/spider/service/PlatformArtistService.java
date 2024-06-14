@@ -11,6 +11,8 @@ public interface PlatformArtistService {
 
     public List<PlatformArtistVO> getVoListByArtistId(Long id);
 
+    public Integer count();
+
     public Integer updateSelectiveById(PlatformArtist platformArtist);
 
     public Integer insertSelective(PlatformArtist platformArtist);
