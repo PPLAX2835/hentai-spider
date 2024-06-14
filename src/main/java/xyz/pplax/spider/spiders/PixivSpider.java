@@ -6,9 +6,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import xyz.pplax.spider.model.pojo.Artist;
+import xyz.pplax.spider.model.pojo.Config;
 import xyz.pplax.spider.model.pojo.File;
 import xyz.pplax.spider.model.pojo.PlatformArtist;
 import xyz.pplax.spider.utils.AsyncHttpUtil;
@@ -29,14 +29,8 @@ public class PixivSpider {
     @Autowired
     private Executor threadPoolTaskExecutor;
 
-    @Value("${pplax.spider.pixiv.cookie:PPLAX}")
-    private String cookie;
-
-    @Value("${pplax.spider.pixiv.enableCookie:false}")
-    private boolean enableCookie;
-
-    @Value("${pplax.spider.user-agent}")
-    private String userAgent;
+    @Autowired
+    private Config systemConfig;
 
     Map<String,String> headers = new HashMap<>();
 
@@ -53,9 +47,9 @@ public class PixivSpider {
         // 先获取所有的作品id
         logger.info("正在获取所有作品id");
 
-        if (enableCookie) {
-            headers.put("User-Agent", userAgent);
-            headers.put("Cookie", cookie);
+        if (systemConfig.getPixivEnableCookie()) {
+            headers.put("User-Agent", systemConfig.getUserAgent());
+            headers.put("Cookie", systemConfig.getPixivCookie());
         }
         String profileGetUrl = "https://www.pixiv.net/ajax/user/" + platformArtist.getIdInPlatform() + "/profile/all";
 

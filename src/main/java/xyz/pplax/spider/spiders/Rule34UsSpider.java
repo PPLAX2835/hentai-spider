@@ -33,9 +33,6 @@ public class Rule34UsSpider {
     @Autowired
     private FileDao fileDao;
 
-    @Value("${pplax.spider.basepath}")
-    private String basePath;
-
     private final static Logger logger = LoggerFactory.getLogger(Rule34UsSpider.class);
 
     /**

@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="xyz.pplax.spider.dao.ConfigDao">
+  <resultMap id="BaseResultMap" type="xyz.pplax.spider.model.pojo.Config">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="base_path" jdbcType="VARCHAR" property="basePath" />
+    <result column="max_request_fail_num" jdbcType="INTEGER" property="maxRequestFailNum" />
+    <result column="proxy_enable" jdbcType="BOOLEAN" property="proxyEnable" />
+    <result column="proxy_host" jdbcType="VARCHAR" property="proxyHost" />
+    <result column="proxy_port" jdbcType="INTEGER" property="proxyPort" />
+    <result column="user_agent" jdbcType="VARCHAR" property="userAgent" />
+    <result column="furaffinity_enable_cookie" jdbcType="BOOLEAN" property="furaffinityEnableCookie" />
+    <result column="furaffinity_cookie" jdbcType="VARCHAR" property="furaffinityCookie" />
+    <result column="pixiv_enable_cookie" jdbcType="BOOLEAN" property="pixivEnableCookie" />
+    <result column="pixiv_cookie" jdbcType="VARCHAR" property="pixivCookie" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, max_request_fail_num, `base_path`, `proxy_enable`, proxy_host, proxy_port, user_agent,
+    furaffinity_enable_cookie, pixiv_enable_cookie, pixiv_cookie
+  </sql>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from config
+  </select>
+  <insert id="insert" parameterType="xyz.pplax.spider.model.pojo.Config">
+    insert into config (base_path, max_request_fail_num, proxy_enable, proxy_host,
+      proxy_port, user_agent, furaffinity_enable_cookie, 
+      furaffinity_cookie, pixiv_enable_cookie, pixiv_cookie
+      )
+    values (#{basePath,jdbcType=VARCHAR}, #{maxRequestFailNum,jdbcType=INTEGER}, #{proxyEnable,jdbcType=BOOLEAN}, #{proxyHost,jdbcType=VARCHAR},
+      #{proxyPort,jdbcType=INTEGER}, #{userAgent,jdbcType=VARCHAR}, #{furaffinityEnableCookie,jdbcType=BOOLEAN}, 
+      #{furaffinityCookie,jdbcType=VARCHAR}, #{pixivEnableCookie,jdbcType=BOOLEAN}, #{pixivCookie,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="xyz.pplax.spider.model.pojo.Config">
+    insert into config
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="basePath != null">
+        base_path,
+      </if>
+      <if test="maxRequestFailNum != null">
+        max_request_fail_num,
+      </if>
+      <if test="proxyEnable != null">
+        proxy_enable,
+      </if>
+      <if test="proxyHost != null">
+        proxy_host,
+      </if>
+      <if test="proxyPort != null">
+        proxy_port,
+      </if>
+      <if test="userAgent != null">
+        user_agent,
+      </if>
+      <if test="furaffinityEnableCookie != null">
+        furaffinity_enable_cookie,
+      </if>
+      <if test="furaffinityCookie != null">
+        furaffinity_cookie,
+      </if>
+      <if test="pixivEnableCookie != null">
+        pixiv_enable_cookie,
+      </if>
+      <if test="pixivCookie != null">
+        pixiv_cookie,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="basePath != null">
+        #{basePath,jdbcType=VARCHAR},
+      </if>
+      <if test="maxRequestFailNum != null">
+        #{maxRequestFailNum,jdbcType=INTEGER}
+      </if>
+      <if test="proxyEnable != null">
+        #{proxyEnable,jdbcType=BOOLEAN},
+      </if>
+      <if test="proxyHost != null">
+        #{proxyHost,jdbcType=VARCHAR},
+      </if>
+      <if test="proxyPort != null">
+        #{proxyPort,jdbcType=INTEGER},
+      </if>
+      <if test="userAgent != null">
+        #{userAgent,jdbcType=VARCHAR},
+      </if>
+      <if test="furaffinityEnableCookie != null">
+        #{furaffinityEnableCookie,jdbcType=BOOLEAN},
+      </if>
+      <if test="furaffinityCookie != null">
+        #{furaffinityCookie,jdbcType=VARCHAR},
+      </if>
+      <if test="pixivEnableCookie != null">
+        #{pixivEnableCookie,jdbcType=BOOLEAN},
+      </if>
+      <if test="pixivCookie != null">
+        #{pixivCookie,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="xyz.pplax.spider.model.pojo.Config">
+    update config
+    <set>
+      <if test="basePath != null">
+        `base_path` = #{basePath,jdbcType=VARCHAR},
+      </if>
+      <if test="maxRequestFailNum != null">
+        max_request_fail_num = #{maxRequestFailNum,jdbcType=INTEGER}
+      </if>
+      <if test="proxyEnable != null">
+        proxy_enable = #{proxyEnable,jdbcType=INTEGER},
+      </if>
+      <if test="proxyHost != null">
+        proxy_host = #{proxyHost,jdbcType=VARCHAR},
+      </if>
+      <if test="proxyPort != null">
+        proxy_port = #{proxyPort,jdbcType=INTEGER},
+      </if>
+      <if test="userAgent != null">
+        user_agent = #{userAgent,jdbcType=VARCHAR},
+      </if>
+      <if test="furaffinityEnableCookie != null">
+        furaffinity_enable_cookie = #{furaffinityEnableCookie,jdbcType=TINYINT},
+      </if>
+      <if test="furaffinityCookie != null">
+        furaffinity_cookie = #{furaffinityCookie,jdbcType=VARCHAR},
+      </if>
+      <if test="pixivEnableCookie != null">
+        pixiv_enable_cookie = #{pixivEnableCookie,jdbcType=TINYINT},
+      </if>
+      <if test="pixivCookie != null">
+        pixiv_cookie = #{pixivCookie,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="xyz.pplax.spider.model.pojo.Config">
+    update config
+    set
+      `base_path` = #{basePath,jdbcType=VARCHAR},
+      max_request_fail_num = #{maxRequestFailNum,jdbcType=INTEGER},
+      proxy_enable = #{proxyEnable,jdbcType=TINYINT},
+      proxy_host = #{proxyHost,jdbcType=VARCHAR},
+      proxy_port = #{proxyPort,jdbcType=INTEGER},
+      user_agent = #{userAgent,jdbcType=VARCHAR},
+      furaffinity_enable_cookie = #{furaffinityEnableCookie,jdbcType=TINYINT},
+      furaffinity_cookie = #{furaffinityCookie,jdbcType=VARCHAR},
+      pixiv_enable_cookie = #{pixivEnableCookie,jdbcType=TINYINT},
+      pixiv_cookie = #{pixivCookie,jdbcType=VARCHAR},
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="save" parameterType="xyz.pplax.spider.model.pojo.Config">
+    update config
+    <set>
+      <if test="basePath != null">
+        `base_path` = #{basePath,jdbcType=VARCHAR},
+      </if>
+      <if test="maxRequestFailNum != null">
+        max_request_fail_num = #{maxRequestFailNum,jdbcType=INTEGER},
+      </if>
+      <if test="proxyEnable != null">
+        proxy_enable = #{proxyEnable,jdbcType=INTEGER},
+      </if>
+      <if test="proxyHost != null">
+        proxy_host = #{proxyHost,jdbcType=VARCHAR},
+      </if>
+      <if test="proxyPort != null">
+        proxy_port = #{proxyPort,jdbcType=INTEGER},
+      </if>
+      <if test="userAgent != null">
+        user_agent = #{userAgent,jdbcType=VARCHAR},
+      </if>
+      <if test="furaffinityEnableCookie != null">
+        furaffinity_enable_cookie = #{furaffinityEnableCookie,jdbcType=TINYINT},
+      </if>
+      <if test="furaffinityCookie != null">
+        furaffinity_cookie = #{furaffinityCookie,jdbcType=VARCHAR},
+      </if>
+      <if test="pixivEnableCookie != null">
+        pixiv_enable_cookie = #{pixivEnableCookie,jdbcType=TINYINT},
+      </if>
+      <if test="pixivCookie != null">
+        pixiv_cookie = #{pixivCookie,jdbcType=VARCHAR},
+      </if>
+    </set>
+  </update>
+</mapper>

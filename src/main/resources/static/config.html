@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>hentai spider</title>
+    <link href="js/layui/css/layui.css" rel="stylesheet">
+</head>
+<body>
+
+    <div class="layui-row">
+
+        <div class="layui-panel">
+            <h1>配置</h1>
+            <a href="artist.html"><h3>作者管理</h3></a>
+            <a href="platform.html"><h3>平台管理</h3></a>
+
+            <div class="layui-row">
+                <table class="layui-hide" id="config-table" lay-filter="config-table"></table>
+            </div>
+        </div>
+
+    </div>
+
+
+    <script src="js/layui/layui.js"></script>
+
+    <script>
+
+        layui.use(['table'], function () {
+            var table = layui.table;
+            var form = layui.form;
+            var layer = layui.layer;
+
+            table.render({
+                elem: '#config-table', // 指定table模板  也就是上方的table DOM
+                height: 400, // 指定Table模板的高度
+                url: '/api/config', // 对应的数据接口，这边直接是请求的json文件
+                limit: 10,
+                limits:[10],
+                cellMinWidth: 120,
+                page: true, // 开启分页
+                id: 'configReload',
+                cols: [[
+                    // {checkbox: true, fixed: true},
+                    {field:'basePath', edit: 'text', title: '存储地址'},
+                    {field:'maxRequestFailNum', edit: 'text', title: '最大请求失败重试次数'},
+                    {field: 'proxyEnable', title: '启用代理', align: 'center', templet: '#proxy-switch'},
+                    {field:'proxyHost', edit: 'text', title: '代理ip'},
+                    {field:'proxyPort', edit: 'text', title: '代理端口'},
+                    {field:'userAgent', edit: 'text', title: 'user-agent'},
+                    {field:'furaffinityEnableCookie', title: 'furaffinity启用Cookie', align: 'center', templet: '#furaffinity-cookie-switch'},
+                    {field:'furaffinityCookie', edit: 'text', title: 'furaffinityCookie'},
+                    {field:'pixivEnableCookie', title: 'pixiv启用Cookie', align: 'center', templet: '#pixiv-cookie-switch'},
+                    {field:'pixivCookie', edit: 'text', title: 'pixivCookie'},
+                ]]
+            });
+
+            // 行编辑事件
+            table.on('edit(config-table)', function(obj){
+                console.log(obj.data)
+
+                let data = obj.data
+                var formdata=new FormData();
+                formdata.append("basePath", data.basePath);
+                formdata.append("furaffinityEnableCookie", data.furaffinityEnableCookie);
+                formdata.append("furaffinityCookie", data.furaffinityEnableCookie);
+                formdata.append("maxRequestFailNum", data.maxRequestFailNum);
+                formdata.append("pixivCookie", data.pixivCookie);
+                formdata.append("pixivEnableCookie", data.pixivEnableCookie);
+                formdata.append("proxyEnable", data.proxyEnable);
+                formdata.append("proxyHost", data.proxyHost);
+                formdata.append("proxyPort", data.proxyPort);
+                formdata.append("userAgent", data.userAgent);
+
+                $.ajax({
+                    type: "PUT",
+                    url: '/api/config',
+                    processData:false,
+                    contentType:false,
+                    data: formdata,
+                    success: function(res) {
+                        layer.msg(res);
+                        table.reload('configReload', {
+                            url: '/api/config',
+                            page: {
+                                curr: 1 //重新从第 1 页开始
+                            }
+                            ,where: {
+                                keyword: $('#keyword-input').val()
+                            }
+                        })
+                    }
+                });
+
+            });
+
+            form.on('switch(proxy-switch-state)', function(obj){
+                //根据业务判断是开启还是关闭
+                var state = obj.elem.checked;
+
+                var formdata=new FormData();
+                formdata.append("proxyEnable", state);
+                $.ajax({
+                    type: "PUT",
+                    url: '/api/config',
+                    processData:false,
+                    contentType:false,
+                    data: formdata,
+                    success: function(res) {
+                        layer.msg(res);
+                    }
+                });
+            });
+            form.on('switch(furaffinity-cookie-switch-state)', function(obj){
+                //根据业务判断是开启还是关闭
+                var state = obj.elem.checked;
+
+                var formdata=new FormData();
+                formdata.append("furaffinityEnableCookie", state);
+                $.ajax({
+                    type: "PUT",
+                    url: '/api/config',
+                    processData:false,
+                    contentType:false,
+                    data: formdata,
+                    success: function(res) {
+                        layer.msg(res);
+                    }
+                });
+            });
+            form.on('switch(pixiv-cookie-switch-state)', function(obj){
+                //根据业务判断是开启还是关闭
+                var state = obj.elem.checked;
+
+                console.log('pixiv-cookie-switch-state')
+                console.log(state)
+
+                var formdata=new FormData();
+                formdata.append("pixivEnableCookie", state);
+                $.ajax({
+                    type: "PUT",
+                    url: '/api/config',
+                    processData:false,
+                    contentType:false,
+                    data: formdata,
+                    success: function(res) {
+                        layer.msg(res);
+                    }
+                });
+            });
+
+            var $ = layui.$, active = {
+                reload: function(){
+                    //执行重载
+                    table.reload('configReload', {
+                        url: '/api/config',
+                        page: {
+                            curr: 1 //重新从第 1 页开始
+                        }
+                        ,where: {
+                            keyword: $('#keyword-input').val()
+                        }
+                    })
+                }
+            };
+
+            $('#search-btn').on('click', function(){
+                var type = $(this).data('type');
+                active[type] ? active[type].call(this) : '';
+            });
+
+        })
+    </script>
+
+
+    <script id="proxy-switch" type="text/html">
+        <input type="checkbox"  name="state"  value = {{d.proxyEnable}} lay-skin="switch" lay-text="开启|关闭" lay-filter="proxy-switch-state" {{ d.proxyEnable ? 'checked' : '' }}>
+    </script>
+
+    <script id="furaffinity-cookie-switch" type="text/html">
+        <input type="checkbox"  name="state"  value = {{d.furaffinityEnableCookie}} lay-skin="switch" lay-text="开启|关闭" lay-filter="furaffinity-cookie-switch-state" {{ d.furaffinityEnableCookie ? 'checked' : '' }}>
+    </script>
+
+    <script id="pixiv-cookie-switch" type="text/html">
+        <input type="checkbox"  name="state"  value = {{d.pixivEnableCookie}} lay-skin="switch" lay-text="开启|关闭" lay-filter="pixiv-cookie-switch-state" {{ d.pixivEnableCookie ? 'checked' : '' }}>
+    </script>
+
+
+
+</body>
+</html>

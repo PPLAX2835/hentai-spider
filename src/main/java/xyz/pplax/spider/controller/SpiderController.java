@@ -17,9 +17,6 @@ public class SpiderController {
     @Autowired
     private SpiderService spiderService;
 
-    @Value("${pplax.spider.basepath}")
-    private String basePath;
-
     /**
      * 只抓取某个平台的
      * @param id

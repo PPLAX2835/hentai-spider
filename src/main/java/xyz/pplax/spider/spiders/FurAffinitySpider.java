@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import xyz.pplax.spider.model.pojo.Artist;
+import xyz.pplax.spider.model.pojo.Config;
 import xyz.pplax.spider.model.pojo.File;
 import xyz.pplax.spider.model.pojo.PlatformArtist;
 import xyz.pplax.spider.utils.AsyncHttpUtil;
@@ -31,11 +32,8 @@ public class FurAffinitySpider {
     @Autowired
     private AsyncHttpUtil asyncHttpUtil;
 
-    @Value("${pplax.spider.furaffinity.cookie:PPLAX}")
-    private String cookie;
-
-    @Value("${pplax.spider.furaffinity.enableCookie:false}")
-    private boolean enableCookie;
+    @Autowired
+    private Config systemConfig;
 
     @Autowired
     private Executor threadPoolTaskExecutor;
@@ -51,8 +49,8 @@ public class FurAffinitySpider {
 
         List<File> fileList = new ArrayList<>();
         // 添加请求头
-        if (enableCookie) {
-            headers.put("cookie", cookie);
+        if (systemConfig.getFuraffinityEnableCookie()) {
+            headers.put("cookie", systemConfig.getFuraffinityCookie());
         }
 
         // 获得所有作品主页

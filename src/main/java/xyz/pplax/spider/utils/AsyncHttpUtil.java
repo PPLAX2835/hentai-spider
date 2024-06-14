@@ -9,10 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import xyz.pplax.spider.dao.FileDao;
+import xyz.pplax.spider.model.pojo.Config;
 import xyz.pplax.spider.model.pojo.File;
-import xyz.pplax.spider.spiders.FurAffinitySpider;
 
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.Channels;
@@ -38,11 +37,8 @@ public class AsyncHttpUtil {
     @Autowired
     private FileDao fileDao;
 
-    @Value("${pplax.spider.basepath}")
-    private String basePath;
-
-    @Value("${pplax.spider.request.maxFailNum}")
-    private int maxFailNum;
+    @Autowired
+    private Config systemConfig;
 
     private final static Logger logger = LoggerFactory.getLogger(AsyncHttpUtil.class);
 
@@ -186,7 +182,7 @@ public class AsyncHttpUtil {
     public Boolean download(File file) throws IOException {
 
         // 判断文件是否已经下载过
-        if (FileUtils.fileExists(basePath + file.getFilePath() + file.getFileName())) {
+        if (FileUtils.fileExists(systemConfig.getBasePath() + file.getFilePath() + file.getFileName())) {
             logger.warn("文件已经下载过了");
             logger.info("文件信息：" + JSON.toJSONString(file));
             return false;
@@ -199,10 +195,10 @@ public class AsyncHttpUtil {
         ReadableByteChannel inputChannel = Channels.newChannel(response.getResponseBodyAsStream());
 
         // 创建目录
-        FileUtils.createDirectory(basePath + file.getFilePath());
+        FileUtils.createDirectory(systemConfig.getBasePath() + file.getFilePath());
 
         // 创建本地文件输出流
-        FileOutputStream fos = new FileOutputStream(basePath + file.getFilePath() + file.getFileName());
+        FileOutputStream fos = new FileOutputStream(systemConfig.getBasePath() + file.getFilePath() + file.getFileName());
         FileChannel outputChannel = fos.getChannel();
 
         // 将输入流的内容写入本地文件
@@ -234,7 +230,7 @@ public class AsyncHttpUtil {
         File existFile = fileDao.selectByPlatformIdAndIdInPlatform(file.getPlatformId(), file.getIdInPlatform());
 
         // 判断文件是否已经下载过
-        if (FileUtils.fileExists(basePath + file.getFilePath() + file.getFileName())) {
+        if (FileUtils.fileExists(systemConfig.getBasePath() + file.getFilePath() + file.getFileName())) {
             logger.warn("文件已经下载过了");
 
             // 持久化到数据库
@@ -253,10 +249,10 @@ public class AsyncHttpUtil {
         ReadableByteChannel inputChannel = Channels.newChannel(response.getResponseBodyAsStream());
 
         // 创建目录
-        FileUtils.createDirectory(basePath + file.getFilePath());
+        FileUtils.createDirectory(systemConfig.getBasePath() + file.getFilePath());
 
         // 创建本地文件输出流
-        FileOutputStream fos = new FileOutputStream(basePath + file.getFilePath() + file.getFileName());
+        FileOutputStream fos = new FileOutputStream(systemConfig.getBasePath() + file.getFilePath() + file.getFileName());
         FileChannel outputChannel = fos.getChannel();
 
         // 将输入流的内容写入本地文件
@@ -337,7 +333,7 @@ public class AsyncHttpUtil {
         } catch (InterruptedException | ExecutionException e) {
             logger.error(e.getMessage());
 
-            if (num >= maxFailNum) {
+            if (num >= systemConfig.getMaxRequestFailNum()) {
                 logger.error("Too many failures, stop recursion");
                 return "";
             }
@@ -359,7 +355,7 @@ public class AsyncHttpUtil {
         } catch (InterruptedException | ExecutionException e) {
             logger.error(e.getMessage());
 
-            if (num >= maxFailNum) {
+            if (num >= systemConfig.getMaxRequestFailNum()) {
                 logger.error("Too many failures, stop recursion");
                 return null;
             }
@@ -387,7 +383,7 @@ public class AsyncHttpUtil {
         } catch (ExecutionException | InterruptedException e) {
             logger.error(e.getMessage());
 
-            if (num >= maxFailNum) {
+            if (num >= systemConfig.getMaxRequestFailNum()) {
                 logger.error("Too many failures, stop recursion");
                 return "";
             }
@@ -414,7 +410,7 @@ public class AsyncHttpUtil {
         } catch (ExecutionException | InterruptedException e) {
             logger.error(e.getMessage());
 
-            if (num >= maxFailNum) {
+            if (num >= systemConfig.getMaxRequestFailNum()) {
                 logger.error("Too many failures, stop recursion");
                 return null;
             }
@@ -442,7 +438,7 @@ public class AsyncHttpUtil {
         } catch (ExecutionException | InterruptedException e) {
             logger.error(e.getMessage());
 
-            if (num >= maxFailNum) {
+            if (num >= systemConfig.getMaxRequestFailNum()) {
                 logger.error("Too many failures, stop recursion");
                 return null;
             }
@@ -470,7 +466,7 @@ public class AsyncHttpUtil {
         } catch (ExecutionException | InterruptedException e) {
             logger.error(e.getMessage());
 
-            if (num >= maxFailNum) {
+            if (num >= systemConfig.getMaxRequestFailNum()) {
                 logger.error("Too many failures, stop recursion");
                 return null;
             }
@@ -503,7 +499,7 @@ public class AsyncHttpUtil {
         } catch (ExecutionException | InterruptedException e) {
             logger.error(e.getMessage());
 
-            if (num >= maxFailNum) {
+            if (num >= systemConfig.getMaxRequestFailNum()) {
                 logger.error("Too many failures, stop recursion");
                 return null;
             }
@@ -535,7 +531,7 @@ public class AsyncHttpUtil {
         } catch (ExecutionException | InterruptedException e) {
             logger.error(e.getMessage());
 
-            if (num >= maxFailNum) {
+            if (num >= systemConfig.getMaxRequestFailNum()) {
                 logger.error("Too many failures, stop recursion");
                 return null;
             }

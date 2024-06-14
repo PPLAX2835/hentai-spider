@@ -5,14 +5,14 @@ package xyz.pplax.spider.model.constants;
  */
 public class PlatformConstants {
 
-    public static String E621 = "e621";
+    public final static String E621 = "e621";
 
-    public static String RULE34_PAHEAL = "rule34_paheal";
+    public final static String RULE34_PAHEAL = "rule34_paheal";
 
-    public static String RULE34_US = "rule34_us";
+    public final static String RULE34_US = "rule34_us";
 
-    public static String PIXIV = "pixiv";
+    public final static String PIXIV = "pixiv";
 
-    public static String FURAFFINITY = "furaffinity";
+    public final static String FURAFFINITY = "furaffinity";
 
 }
