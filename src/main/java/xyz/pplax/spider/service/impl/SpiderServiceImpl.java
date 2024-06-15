@@ -10,10 +10,7 @@ import xyz.pplax.spider.dao.ArtistDao;
 import xyz.pplax.spider.dao.PlatformArtistDao;
 import xyz.pplax.spider.dao.PlatformDao;
 import xyz.pplax.spider.model.constants.PlatformConstants;
-import xyz.pplax.spider.model.pojo.Artist;
-import xyz.pplax.spider.model.pojo.File;
-import xyz.pplax.spider.model.pojo.Platform;
-import xyz.pplax.spider.model.pojo.PlatformArtist;
+import xyz.pplax.spider.model.pojo.*;
 import xyz.pplax.spider.service.SpiderService;
 import xyz.pplax.spider.spiders.*;
 import xyz.pplax.spider.utils.AsyncHttpUtil;
@@ -53,6 +50,9 @@ public class SpiderServiceImpl implements SpiderService {
 
     @Autowired
     private AsyncHttpUtil asyncHttpUtil;
+
+    @Autowired
+    private Config systemConfig;
 
     /**
      * platformArtist 对应的图片
@@ -96,8 +96,12 @@ public class SpiderServiceImpl implements SpiderService {
             // 获得文件列表
             fileList = rule34UsSpider.getFileList(platformArtist, artist);
 
+            // 设置请求头
+            Map<String, String> headers = new HashMap<>();
+            headers.put("User-Agent", systemConfig.getUserAgent());
+
             // 下载
-            asyncHttpUtil.downloadBatch(fileList);
+            asyncHttpUtil.downloadBatch(fileList, headers);
         }
         if (platform.getName().equals(PlatformConstants.PIXIV)) {
             // 执行pixiv的爬虫

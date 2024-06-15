@@ -135,7 +135,7 @@ public class Rule34UsSpider {
                     // 说明这个不是图片资源，是视频资源
                     Elements video = document.getElementsByAttributeValue("style", "max-width: 100%; max-height: 80vh");
 
-                    Element source = video.select("source").get(0);
+                    Element source = video.select("source").get(1);
                     src = source.attr("src");
                 }
 
