@@ -66,7 +66,7 @@ public class Rule34UsSpider {
         for (int i = 1; i <= maxPage; i++) {
             urlList.add(platformArtist.getHomepageUrl() + "&page=" + i);
         }
-        List<String> responseStringList = asyncHttpUtil.sendGetRequestBatch(urlList);
+        List<String> responseStringList = asyncHttpUtil.sendGetRequestBatch(urlList, headers);
         responseStringList.add(responseString);
 
 
@@ -122,7 +122,9 @@ public class Rule34UsSpider {
                 // 获得响应
                 logger.info("正在获取详情页为：" + file.getPageUrl() + "的文件地址");
 
-                String responseString = asyncHttpUtil.sendGetRequest(file.getPageUrl(), 0);
+                Map<String, String> headers = new HashMap<>();
+                headers.put("User-Agent", systemConfig.getUserAgent());
+                String responseString = asyncHttpUtil.sendGetRequest(file.getPageUrl(), headers, 0);
 
                 Document document = Jsoup.parseBodyFragment(responseString);
 

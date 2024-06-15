@@ -22,8 +22,8 @@ public class AsyncHttpClientConfigurator {
                 .setMaxConnections(30)                  // 最大连接数，这个要大于等于最大线程数，要不然有些连接会被拒绝
                 .setMaxConnectionsPerHost(20)
                 .setConnectTimeout(600000)
-                .setRequestTimeout(10000)
-                .setReadTimeout(10000)
+                .setRequestTimeout(600000)
+                .setReadTimeout(600000)
                 .setFollowRedirect(true);
 
         if (systemConfig.getProxyEnable()) {
