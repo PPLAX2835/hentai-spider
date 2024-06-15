@@ -11,12 +11,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import xyz.pplax.spider.dao.FileDao;
 import xyz.pplax.spider.model.pojo.Artist;
+import xyz.pplax.spider.model.pojo.Config;
 import xyz.pplax.spider.model.pojo.File;
 import xyz.pplax.spider.model.pojo.PlatformArtist;
 import xyz.pplax.spider.utils.AsyncHttpUtil;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.stream.Collectors;
@@ -31,7 +34,7 @@ public class Rule34UsSpider {
     private Executor threadPoolTaskExecutor;
 
     @Autowired
-    private FileDao fileDao;
+    private Config systemConfig;
 
     private final static Logger logger = LoggerFactory.getLogger(Rule34UsSpider.class);
 
@@ -46,7 +49,9 @@ public class Rule34UsSpider {
         int maxPage = 1;
 
         // 获得html文本
-        String responseString = asyncHttpUtil.sendGetRequest(homePageUrl, 0);
+        Map<String, String > headers = new HashMap<>();
+        headers.put("User-Agent", systemConfig.getUserAgent());
+        String responseString = asyncHttpUtil.sendGetRequest(homePageUrl, headers, 0);
 
         // 获得最大页码
         Document doc = Jsoup.parseBodyFragment(responseString);
@@ -58,7 +63,7 @@ public class Rule34UsSpider {
 
         // 获得每个页面的html文本
         List<String> urlList = new ArrayList<>();
-        for (int i = 1; i < maxPage; i++) {
+        for (int i = 1; i <= maxPage; i++) {
             urlList.add(platformArtist.getHomepageUrl() + "&page=" + i);
         }
         List<String> responseStringList = asyncHttpUtil.sendGetRequestBatch(urlList);
