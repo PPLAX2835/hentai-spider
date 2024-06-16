@@ -73,7 +73,7 @@ public class Rule34UsSpider {
         // 遍历所有页面并提取内容
         List<File> fileList = new ArrayList<>();
         for (String respString : responseStringList) {
-            Document document = Jsoup.parseBodyFragment(responseString);
+            Document document = Jsoup.parseBodyFragment(respString);
 
             Elements elementsByClass = document.getElementsByAttributeValue("style", "border-radius: 3px; margin: 0px 10px 15px 10px; overflow: hidden; height: 200px;");
 
