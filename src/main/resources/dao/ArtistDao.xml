@@ -27,6 +27,7 @@
     <include refid="Base_Column_List" />
     from artist
     where name like '%${name}%'
+    order by insert_at desc
     limit #{limit,jdbcType=INTEGER}, #{offset,jdbcType=INTEGER}
   </select>
   <select id="selectCountByKeyword" resultType="int">
