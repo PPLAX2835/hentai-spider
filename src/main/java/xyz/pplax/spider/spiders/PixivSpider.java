@@ -81,7 +81,7 @@ public class PixivSpider {
             step++;
         }
         // 还剩个尾巴
-        if (step != 0) {
+        if (step != 0 && stringBuffer.toString().contains("ids[]=")) {
             stringBuffer.append("work_category=illust&is_first_page=1");        // 这两个参数是必要的
             workDetailGetUrls.add(stringBuffer.toString());
         }
