@@ -148,4 +148,16 @@ public class SpiderServiceImpl implements SpiderService {
             spiderByPlatformArtist(platformArtist.getId());
         }
     }
+
+    /**
+     * 抓取所有的
+     */
+    @Override
+    public void spiderAll() {
+        List<Artist> artistList = artistDao.selectAll();
+
+        for (Artist artist : artistList) {
+            spiderByArtist(artist.getId());
+        }
+    }
 }

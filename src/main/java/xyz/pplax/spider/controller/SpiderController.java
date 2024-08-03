@@ -18,6 +18,14 @@ public class SpiderController {
     private SpiderService spiderService;
 
     /**
+     * 抓取所有作者的
+     */
+    @RequestMapping(value = "/all")
+    public void spiderAll() {
+        spiderService.spiderAll();
+    }
+
+    /**
      * 只抓取某个平台的
      * @param id
      * @return

@@ -20,6 +20,8 @@ public interface ArtistDao {
 
     List<Artist> selectPage(@Param("limit") Integer limit, @Param("offset") Integer offset);
 
+    List<Artist> selectAll();
+
     List<Artist> selectPageByName(@Param("limit") Integer limit, @Param("offset") Integer offset, @Param("name") String name);
 
     int updateByPrimaryKeySelective(Artist record);

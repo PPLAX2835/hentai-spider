@@ -22,6 +22,11 @@
     from artist
     limit  #{limit,jdbcType=INTEGER}, #{offset,jdbcType=INTEGER}
   </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from artist
+  </select>
   <select id="selectPageByName" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />

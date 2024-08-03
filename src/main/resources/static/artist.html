@@ -21,6 +21,7 @@
                     </div>
                     <button class="layui-btn" data-type="reload" id="search-btn">搜索</button>
                     <button class="layui-btn" id="add-btn">添加</button>
+                    <button class="layui-btn" data-type="spiderAll" id="all-btn">抓取所有作者作品</button>
                 </div>
             </div>
 
@@ -162,6 +163,17 @@
                             keyword: $('#keyword-input').val()
                         }
                     })
+                },
+                spiderAll: function (){
+                    layer.msg("已交付给爬虫程序，可以在你配置的路径中查看文件下载情况，不许连续点击！！！！！！！");
+                    $.ajax({
+                        type: "GET",
+                        url: '/api/spider/all',
+                        processData:false,
+                        contentType:false,
+                        success: function(res) {
+                        }
+                    });
                 }
             };
 
@@ -185,6 +197,10 @@
                 })
             });
 
+            $('#all-btn').on('click', function(){
+                var type = $(this).data('type');
+                active[type] ? active[type].call(this) : '';
+            });
         })
     </script>
 
